@@ -32,7 +32,7 @@
   
 * 주문
 
-  <img src=https://github.com/shpark-personal/E-commerce/assets/58277594/  width="500" height="350"/> 
+  <img src=https://github.com/shpark-personal/E-commerce/assets/58277594/c2389147-1762-493b-b8ef-74af7214ed05  width="500" height="350"/> 
   
 * 결제
 
@@ -40,8 +40,7 @@
   
 * 상위 상품 조회
   
-  <img src=https://github.com/shpark-personal/E-commerce/assets/58277594/  width="500" height="350"/> 
-
+  <img src=https://github.com/shpark-personal/E-commerce/assets/58277594/bda715d0-b6a9-443d-95be-fd15fcaf2bba  width="500" height="350"/> 
 
 
   
