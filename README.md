@@ -50,8 +50,8 @@
 | 구분 | API 명 | 설명 |
 | ----- | ----- | --------------------- |
 | 잔액 충전 | charge | user의 point를 충전한다 |
-| 잔액 조회 | check | user의 point를 조회한다 |
-| 상품 조회 | search | 상품을 검색하여 정보와 수량을 확인한다 |
+| 잔액 조회 | point | user의 point를 조회한다 |
+| 상품 조회 | product | 상품을 검색하여 정보와 수량을 확인한다 |
 | 주문 | order | 상품들을 주문 가능한지 확인한다. 가능하면 주문 form을 생성하여 결제창으로 넘어갈 수 있다. |
 | 결제 | pay | 주문 가능한 상품들을 결제한다. 결제가 완료되면 주문 form을 외부로 전송한다. |
 | 상위 상품 조회 | searchTopRanked | 3일간 많이 팔린 상품을 조회한다 |
@@ -62,11 +62,11 @@
   
   | 구분 | method | Request Url | param | Body
   | ---- | ---- | ---------------- | ---- | ---- |
-  | 잔액 충전 | PATCH | http://{USER_ID}/charge | USER_ID : string | amount : number |
-  | 잔액 조회 | GET | http://{USER_ID}/check | USER_ID : string |  |
-  | 상품 조회 | GET | http://search/{PRODUCT_ID} | PRODUCT_ID : number |  |
-  | 주문 | GET | http://{USER_ID}/order | USER_ID : string | { product_id : number, count : number }[] |
-  | 결제 | UPDATE | http://{USER_ID}/pay | USER_ID : string | { product_id : number, count : number }[] |
+  | 잔액 충전 | PATCH | http://user/{USER_ID}/charge | USER_ID : string | amount : number |
+  | 잔액 조회 | GET | http://user/{USER_ID}/point | USER_ID : string |  |
+  | 상품 조회 | GET | http://product/{PRODUCT_ID} | PRODUCT_ID : number |  |
+  | 주문 | POST | http://user/{USER_ID}/order | USER_ID : string | { product_id : number, count : number }[] |
+  | 결제 | POST | http://user/{USER_ID}/pay | USER_ID : string | { product_id : number, count : number }[] |
   | 상위 상품 조회 | GET | http://searchTopRanked |  |  |
 
 
