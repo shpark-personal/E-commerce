@@ -1,6 +1,7 @@
 # E-commerce 상품 주문 서비스
 
 ### Milestone
+<img width="365" alt="image" src="https://github.com/shpark-personal/E-commerce/assets/58277594/818f9c25-82c3-4b1b-adea-267f9163dfe7">
 
 
 ### 요구사항
