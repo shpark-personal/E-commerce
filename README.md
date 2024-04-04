@@ -64,12 +64,12 @@
   
   | 구분 | method | Request Url | param | Body
   | ---- | ---- | ---------------- | ---- | ---- |
-  | 잔액 충전 | PATCH | http://user/{USER_ID}/charge | USER_ID : string | amount : number |
-  | 잔액 조회 | GET | http://user/{USER_ID}/point | USER_ID : string |  |
-  | 상품 조회 | GET | http://product/{PRODUCT_ID} | PRODUCT_ID : number |  |
-  | 주문 | POST | http://order/{USER_ID} | USER_ID : string | { product_id : number, count : number }[] |
-  | 결제 | POST | http://order/{USER_ID}/pay | USER_ID : string | { product_id : number, count : number }[] |
-  | 상위 상품 조회 | GET | http://product/ranked |  |  |
+  | 잔액 충전 | PATCH | http://mall/user/{USER_ID}/charge | USER_ID : string | amount : number |
+  | 잔액 조회 | GET | http://mall/user/{USER_ID}/point | USER_ID : string |  |
+  | 상품 조회 | GET | http://mall/product/{PRODUCT_ID} | PRODUCT_ID : number |  |
+  | 주문 | POST | http://mall/order/{USER_ID} | USER_ID : string | { product_id : number, count : number }[] |
+  | 결제 | POST | http://mall/order/{USER_ID}/pay | USER_ID : string | { product_id : number, count : number }[] |
+  | 상위 상품 조회 | GET | http://mall/product/ranked |  |  |
 
 
 
