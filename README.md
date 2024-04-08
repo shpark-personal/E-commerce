@@ -1,5 +1,15 @@
 # E-commerce 상품 주문 서비스
 
+목차
+- [Milestone](#milestone)
+- [요구사항](#요구사항)
+- [요구사항 분석](#요구사항-분석)
+- [시퀀스 다이어그램](#시퀀스-다이어그램)
+- [API 명세](#api-명세)
+- [ERD 설계](#erd-설계)
+- [API 미리보기(swagger)](#api-미리보기)
+
+
 ### Milestone
 <img width="365" alt="image" src="https://github.com/shpark-personal/E-commerce/assets/58277594/818f9c25-82c3-4b1b-adea-267f9163dfe7">
 
@@ -102,7 +112,7 @@
 ![image](https://github.com/shpark-personal/E-commerce/assets/58277594/001a8db8-7d28-482d-a641-d280c3788029)
 
 
-### API
+### API 미리보기
 Swagger 사용
 ![image](https://github.com/shpark-personal/E-commerce/assets/58277594/22549381-7e02-4e47-a7ef-74c6d779b7de)
 
