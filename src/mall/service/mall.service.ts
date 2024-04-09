@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { Injectable } from '@nestjs/common'
+import { Inject, Injectable } from '@nestjs/common'
 import {
   PointResult,
   SimpleResult,
@@ -8,15 +8,21 @@ import {
 } from '../models/Result'
 import { ProductItem } from '../models/Product'
 import { Errorcode } from '../models/Enums'
+import { IUSER_REPOSITORY, IUserRepository } from '../repository/mall.interface'
 
 @Injectable()
 export class MallService {
-  charge(userId: string, amount: any): PointResult {
-    return { errorcode: Errorcode.Success, point: 0 }
+  constructor(
+    @Inject(IUSER_REPOSITORY)
+    private readonly userRepository: IUserRepository,
+  ) {}
+
+  charge(userId: string, amount: number): PointResult {
+    return this.userRepository.charge(userId, amount)
   }
 
   point(userId: string): PointResult {
-    return { errorcode: Errorcode.Success, point: 0 }
+    return this.userRepository.get(userId)
   }
 
   getDetail(productId: number): ProductResult {
