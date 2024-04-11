@@ -21,7 +21,7 @@ export class MallService {
     return this.userRepository.charge(userId, amount)
   }
 
-  point(userId: string): PointResult {
+  getPoint(userId: string): PointResult {
     return this.userRepository.get(userId)
   }
 

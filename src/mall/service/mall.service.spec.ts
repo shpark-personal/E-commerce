@@ -47,12 +47,12 @@ describe('MallService', () => {
     beforeEach(() => service.charge('userB', 10))
 
     it('success', () => {
-      const result = service.point('userB')
+      const result = service.getPoint('userB')
       expect(result).toEqual({ errorcode: Errorcode.Success, point: 10 })
     })
 
     it('fail : userId invalid', () => {
-      const result = service.point('userA')
+      const result = service.getPoint('userA')
       expect(result).toEqual({ errorcode: Errorcode.InvalidRequest })
     })
     todo('userId validation')

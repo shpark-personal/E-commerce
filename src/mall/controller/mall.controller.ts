@@ -32,7 +32,7 @@ export class MallController {
   // 잔액 조회
   @Get('user/:id/point')
   point(@Param('id') userId: string): PointResult {
-    return this.mallService.point(userId)
+    return this.mallService.getPoint(userId)
   }
 
   // 상품 조회
