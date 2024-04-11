@@ -80,8 +80,12 @@ describe('MallService', () => {
 
     it('success', async () => {
       const result = await service.getDetail(1)
-      const p = { id: 1, name: 'product_1', quantity: 10 }
-      expect(result).toEqual({ errorcode: Errorcode.Success, product: p })
+      const p = { id: 1, name: 'product_1' }
+      expect(result).toEqual({
+        errorcode: Errorcode.Success,
+        product: p,
+        quantity: 10,
+      })
     })
 
     it('fail', async () => {

@@ -38,8 +38,18 @@ export class MallService {
     return this.userRepository.get(userId)
   }
 
-  async getDetail(productId: number): Promise<ProductResult> {
-    return await this.productRepository.getDetail(productId)
+  async getDetail(productId: number): Promise<ProductDetailResult> {
+    const detailInfo = await this.productRepository.getDetail(productId)
+    const stockInfo = this.stockRepository.getQuantity(productId)
+    if (detailInfo.errorcode != Errorcode.Success)
+      return { errorcode: detailInfo.errorcode }
+    if (stockInfo.errorcode != Errorcode.Success)
+      return { errorcode: stockInfo.errorcode }
+    return {
+      errorcode: Errorcode.Success,
+      product: detailInfo.product,
+      quantity: stockInfo.quantity,
+    }
   }
 
   order(userId: string, products: ProductItem[]): SimpleResult {
