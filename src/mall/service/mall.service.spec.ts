@@ -3,6 +3,7 @@ import { MallService } from './mall.service'
 import { IUSER_REPOSITORY } from '../repository/mall.interface'
 import { TestRepository } from '../repository/test.repository'
 import { Errorcode } from '../models/Enums'
+import { todo } from 'node:test'
 
 describe('MallService', () => {
   let service: MallService
@@ -37,5 +38,8 @@ describe('MallService', () => {
       const result = service.point('userB')
       expect(result).toEqual({ errorcode: Errorcode.Success, point: 0 })
     })
+
+    todo('userId validation')
+    todo('notFound userId')
   })
 })
