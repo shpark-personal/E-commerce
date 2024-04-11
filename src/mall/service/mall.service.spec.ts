@@ -27,18 +27,34 @@ describe('MallService', () => {
   })
 
   describe('charge point', () => {
-    it('success to charge point', () => {
+    it('success', () => {
       const result = service.charge('userA', 10)
       expect(result).toEqual({ errorcode: Errorcode.Success, point: 10 })
+    })
+
+    it('fail : userId invalid', () => {
+      const result = service.charge('', 10)
+      expect(result).toEqual({ errorcode: Errorcode.InvalidRequest })
+    })
+
+    it('fail : minus point', () => {
+      const result = service.charge('userA', -10)
+      expect(result).toEqual({ errorcode: Errorcode.InvalidAmount })
     })
   })
 
   describe('get point', () => {
-    it('success to get point', () => {
+    beforeEach(() => service.charge('userB', 10))
+
+    it('success', () => {
       const result = service.point('userB')
-      expect(result).toEqual({ errorcode: Errorcode.Success, point: 0 })
+      expect(result).toEqual({ errorcode: Errorcode.Success, point: 10 })
     })
 
+    it('fail : userId invalid', () => {
+      const result = service.point('userA')
+      expect(result).toEqual({ errorcode: Errorcode.InvalidRequest })
+    })
     todo('userId validation')
     todo('notFound userId')
   })
