@@ -8,13 +8,21 @@ import {
 } from '../models/Result'
 import { ProductItem } from '../models/Product'
 import { Errorcode } from '../models/Enums'
-import { IUSER_REPOSITORY, IUserRepository } from '../repository/mall.interface'
+import {
+  IPRODUCT_REPOSITORY,
+  IProductRepository,
+  IUSER_REPOSITORY,
+  IUserRepository,
+} from '../repository/mall.interface'
 
 @Injectable()
 export class MallService {
   constructor(
     @Inject(IUSER_REPOSITORY)
     private readonly userRepository: IUserRepository,
+
+    @Inject(IPRODUCT_REPOSITORY)
+    private readonly productRepository: IProductRepository,
   ) {}
 
   charge(userId: string, amount: number): PointResult {

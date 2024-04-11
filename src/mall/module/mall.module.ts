@@ -4,7 +4,11 @@ import { MallService } from '../service/mall.service'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { User } from '../models/Entities'
 import { UserRepository } from '../repository/user.repository'
-import { IUSER_REPOSITORY } from '../repository/mall.interface'
+import {
+  IPRODUCT_REPOSITORY,
+  IUSER_REPOSITORY,
+} from '../repository/mall.interface'
+import { ProductRepository } from '../repository/product.repository'
 
 @Module({
   imports: [TypeOrmModule.forFeature([User, UserRepository])],
@@ -14,6 +18,10 @@ import { IUSER_REPOSITORY } from '../repository/mall.interface'
     {
       provide: IUSER_REPOSITORY,
       useClass: UserRepository,
+    },
+    {
+      provide: IPRODUCT_REPOSITORY,
+      useClass: ProductRepository,
     },
   ],
 })
