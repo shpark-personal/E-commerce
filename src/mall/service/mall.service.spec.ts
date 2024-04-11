@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing'
 import { MallService } from './mall.service'
 import {
   IPRODUCT_REPOSITORY,
+  ISTOCK_REPOSITORY,
   IUSER_REPOSITORY,
 } from '../repository/mall.interface'
 import { TestRepository } from '../repository/test.repository'
@@ -22,6 +23,10 @@ describe('MallService', () => {
         },
         {
           provide: IPRODUCT_REPOSITORY,
+          useClass: TestRepository,
+        },
+        {
+          provide: ISTOCK_REPOSITORY,
           useClass: TestRepository,
         },
       ],

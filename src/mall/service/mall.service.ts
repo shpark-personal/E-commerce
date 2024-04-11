@@ -11,6 +11,8 @@ import { Errorcode } from '../models/Enums'
 import {
   IPRODUCT_REPOSITORY,
   IProductRepository,
+  ISTOCK_REPOSITORY,
+  IStockRepository,
   IUSER_REPOSITORY,
   IUserRepository,
 } from '../repository/mall.interface'
@@ -23,6 +25,9 @@ export class MallService {
 
     @Inject(IPRODUCT_REPOSITORY)
     private readonly productRepository: IProductRepository,
+
+    @Inject(ISTOCK_REPOSITORY)
+    private readonly stockRepository: IStockRepository,
   ) {}
 
   charge(userId: string, amount: number): PointResult {
