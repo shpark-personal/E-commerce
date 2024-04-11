@@ -9,6 +9,8 @@ import {
 import { ProductItem } from '../models/Product'
 import { Errorcode } from '../models/Enums'
 import {
+  IORDER_REPOSITORY,
+  IOrderRepository,
   IPRODUCT_REPOSITORY,
   IProductRepository,
   ISTOCK_REPOSITORY,
@@ -17,6 +19,7 @@ import {
   IUserRepository,
 } from '../repository/mall.interface'
 import { ValidIdChecker } from '../etc/helper'
+import { OrderEntity } from '../models/Entities'
 
 @Injectable()
 export class MallService {
@@ -29,6 +32,9 @@ export class MallService {
 
     @Inject(ISTOCK_REPOSITORY)
     private readonly stockRepository: IStockRepository,
+
+    @Inject(IORDER_REPOSITORY)
+    private readonly orderRepository: IOrderRepository,
   ) {}
 
   charge(userId: string, amount: number): PointResult {
