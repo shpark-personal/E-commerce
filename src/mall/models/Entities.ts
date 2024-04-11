@@ -1,4 +1,5 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm'
+import { ProductItem } from './Product'
 
 @Entity()
 export class User {
@@ -25,4 +26,22 @@ export class StockEntity {
 
   @Column()
   quantity: number
+}
+
+@Entity()
+export class OrderEntity {
+  @PrimaryGeneratedColumn()
+  id: string
+
+  @Column()
+  userId: string
+
+  @Column()
+  products: ProductItem[]
+
+  @Column()
+  payment: number
+
+  @Column()
+  createTime: Date
 }
