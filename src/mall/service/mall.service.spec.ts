@@ -10,6 +10,7 @@ import { todo } from 'node:test'
 
 describe('MallService', () => {
   let service: MallService
+  // let repo: TestRepository
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -27,10 +28,12 @@ describe('MallService', () => {
     }).compile()
 
     service = module.get<MallService>(MallService)
+    // repo = module.get<TestRepository>(IUSER_REPOSITORY)
   })
 
   it('should be defined', () => {
     expect(service).toBeDefined()
+    // expect(repo).toBeDefined()
   })
 
   describe('charge point', () => {
@@ -67,6 +70,8 @@ describe('MallService', () => {
   })
 
   describe('get product details', () => {
+    // FIXME : cannot insert???
+    // beforeEach(() => repo.insertSeedProducts())
 
     it('success', async () => {
       const result = await service.getDetail(1)
