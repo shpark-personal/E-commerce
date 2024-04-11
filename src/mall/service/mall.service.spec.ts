@@ -93,4 +93,15 @@ describe('MallService', () => {
       expect(result).toEqual({ errorcode: Errorcode.InvalidRequest })
     })
   })
+
+  describe('order', () => {
+    it('success', () => {
+      const li = [
+        { id: 1, amount: 3 },
+        { id: 2, amount: 4 },
+      ]
+      const result = service.order('userA', li)
+      expect(result).toEqual(Errorcode.Success)
+    })
+  })
 })
