@@ -65,14 +65,21 @@ export class MallService {
     for (let i = 0; i < products.length; i++) {
       const item = products[i]
       if (!this.stockRepository.enoughStock(item.id, item.amount)) {
-        // stockRepository안에서 수량이 충분하면 아무것도 하지 않고 return
         lack = true
         break
       }
     }
     if (lack) return { errorcode: Errorcode.OutOfStock }
     // fixme : 금액과 수량에 따라 현재 point로 결제 가능한지 확인
-    // order form 생성,
+    const date = new Date()
+    const orderForm: OrderEntity = {
+      id: `${date}`,
+      userId: userId,
+      products: products,
+      payment: 0, // fixme : 총 amount
+      createTime: date,
+    }
+    this.orderRepository.create(orderForm)
     // stockRepository에서
     // stockTable : 재고 차감
     // remainStockTable : 재고 추가
