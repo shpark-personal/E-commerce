@@ -7,7 +7,7 @@ export class SimpleResult {
 
 export class PointResult {
   errorcode: Errorcode
-  point: number
+  point?: number
 }
 
 export class ProductResult {
