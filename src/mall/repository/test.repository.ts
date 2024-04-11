@@ -3,6 +3,7 @@ import { PointResult } from '../models/Result'
 import { Errorcode } from '../models/Enums'
 import { User } from '../models/Entities'
 import { IUserRepository } from './mall.interface'
+import { ValidIdChecker, ValidPointChecker } from '../etc/helper'
 
 @Injectable()
 export class TestRepository implements IUserRepository {
@@ -10,7 +11,8 @@ export class TestRepository implements IUserRepository {
 
   // USER REPOSITORY
   charge(id: string, point: number): PointResult {
-    // validation : id, point (minus)
+    if (!ValidIdChecker(id)) return { errorcode: Errorcode.InvalidRequest }
+    if (!ValidPointChecker(point)) return { errorcode: Errorcode.InvalidAmount }
 
     const userPoint = { id: id, point: point }
     let ec = Errorcode.Success

@@ -5,6 +5,7 @@ import { User } from '../models/Entities'
 import { IUserRepository } from './mall.interface'
 import { PointResult } from '../models/Result'
 import { Errorcode } from '../models/Enums'
+import { ValidIdChecker, ValidPointChecker } from '../etc/helper'
 
 @Injectable()
 export class UserRepository implements IUserRepository {
@@ -14,6 +15,8 @@ export class UserRepository implements IUserRepository {
   ) {}
 
   charge(id: string, point: number): PointResult {
+    if (!ValidIdChecker(id)) return { errorcode: Errorcode.InvalidRequest }
+    if (!ValidPointChecker(point)) return { errorcode: Errorcode.InvalidAmount }
     let newPoint
     this.users.save({ id: id, point: point })
     this.users
