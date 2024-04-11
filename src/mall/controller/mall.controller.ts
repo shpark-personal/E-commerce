@@ -37,8 +37,10 @@ export class MallController {
 
   // 상품 조회
   @Get('product/:productId')
-  searchProductDetail(@Param('productId') productId: number): ProductResult {
-    return this.mallService.getDetail(productId)
+  async searchProductDetail(
+    @Param('productId') productId: number,
+  ): Promise<ProductResult> {
+    return await this.mallService.getDetail(productId)
   }
 
   // 주문

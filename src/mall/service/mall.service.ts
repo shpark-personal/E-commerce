@@ -33,13 +33,8 @@ export class MallService {
     return this.userRepository.get(userId)
   }
 
-  getDetail(productId: number): ProductResult {
-    const p = {
-      id: productId,
-      name: '달력',
-      quantity: 3,
-    }
-    return { errorcode: Errorcode.Success, product: p }
+  async getDetail(productId: number): Promise<ProductResult> {
+    return await this.productRepository.getDetail(productId)
   }
 
   order(userId: string, products: ProductItem[]): SimpleResult {
