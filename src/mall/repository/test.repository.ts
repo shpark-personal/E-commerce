@@ -81,4 +81,9 @@ export class TestRepository
     if (stock == null) return { errorcode: Errorcode.InvalidRequest }
     return { errorcode: Errorcode.Success, quantity: stock.quantity }
   }
+
+  enoughStock(id: number, amount: number): boolean {
+    const stock: StockEntity = this.stockTable.get(id)
+    return stock.quantity < amount
+  }
 }
