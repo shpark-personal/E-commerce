@@ -4,7 +4,7 @@ import {
   PointResult,
   SimpleResult,
   ProductsResult,
-  ProductResult,
+  ProductDetailResult,
 } from '../models/Result'
 import { ProductItem } from '../models/Product'
 import { Errorcode } from '../models/Enums'

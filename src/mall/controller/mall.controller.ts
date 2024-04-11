@@ -13,7 +13,7 @@ import {
   PointResult,
   SimpleResult,
   ProductsResult,
-  ProductResult,
+  ProductDetailResult,
 } from '../models/Result'
 
 @Controller('mall')
@@ -39,7 +39,7 @@ export class MallController {
   @Get('product/:productId')
   async searchProductDetail(
     @Param('productId') productId: number,
-  ): Promise<ProductResult> {
+  ): Promise<ProductDetailResult> {
     return await this.mallService.getDetail(productId)
   }
 

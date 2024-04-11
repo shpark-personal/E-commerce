@@ -15,6 +15,17 @@ export class ProductResult {
   product?: Product
 }
 
+export class StockResult {
+  errorcode: Errorcode
+  quantity?: number
+}
+
+export class ProductDetailResult {
+  errorcode: Errorcode
+  product?: Product
+  quantity?: number
+}
+
 export class ProductsResult {
   errorcode: Errorcode
   products: Product[]
