@@ -16,6 +16,12 @@ export class ProductEntity {
 
   @Column()
   name: string
+}
+
+@Entity()
+export class StockEntity {
+  @PrimaryGeneratedColumn()
+  id: number
 
   @Column()
   quantity: number
