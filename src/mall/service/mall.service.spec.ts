@@ -1,6 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing'
 import { MallService } from './mall.service'
-import { IUSER_REPOSITORY } from '../repository/mall.interface'
+import {
+  IPRODUCT_REPOSITORY,
+  IUSER_REPOSITORY,
+} from '../repository/mall.interface'
 import { TestRepository } from '../repository/test.repository'
 import { Errorcode } from '../models/Enums'
 import { todo } from 'node:test'
@@ -14,6 +17,10 @@ describe('MallService', () => {
         MallService,
         {
           provide: IUSER_REPOSITORY,
+          useClass: TestRepository,
+        },
+        {
+          provide: IPRODUCT_REPOSITORY,
           useClass: TestRepository,
         },
       ],
@@ -55,7 +62,21 @@ describe('MallService', () => {
       const result = service.getPoint('userA')
       expect(result).toEqual({ errorcode: Errorcode.InvalidRequest })
     })
-    todo('userId validation')
+
     todo('notFound userId')
+  })
+
+  describe('get product details', () => {
+
+    it('success', async () => {
+      const result = await service.getDetail(1)
+      const p = { id: 1, name: 'product_1', quantity: 10 }
+      expect(result).toEqual({ errorcode: Errorcode.Success, product: p })
+    })
+
+    it('fail', async () => {
+      const result = await service.getDetail(6)
+      expect(result).toEqual({ errorcode: Errorcode.InvalidRequest })
+    })
   })
 })
