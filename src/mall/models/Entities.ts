@@ -8,3 +8,15 @@ export class User {
   @Column()
   point: number
 }
+
+@Entity()
+export class ProductEntity {
+  @PrimaryGeneratedColumn()
+  id: number
+
+  @Column()
+  name: string
+
+  @Column()
+  quantity: number
+}
