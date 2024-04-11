@@ -7,7 +7,7 @@ import { ValidIdChecker, ValidPointChecker } from '../etc/helper'
 
 @Injectable()
 export class TestRepository implements IUserRepository {
-  private readonly table: Map<string, User> = new Map()
+  private readonly userTable: Map<string, User> = new Map()
 
   // USER REPOSITORY
   charge(id: string, point: number): PointResult {
@@ -17,18 +17,18 @@ export class TestRepository implements IUserRepository {
     const userPoint = { id: id, point: point }
     let ec = Errorcode.Success
     try {
-      this.table.set(id, userPoint)
+      this.userTable.set(id, userPoint)
     } catch {
       ec = Errorcode.InvalidRequest
     } finally {
-      const updated = this.table.get(id) ?? { id: id, point: 0 }
+      const updated = this.userTable.get(id) ?? { id: id, point: 0 }
       return { errorcode: ec, point: updated.point }
     }
   }
 
   get(id: string): PointResult {
     if (!ValidIdChecker(id)) return { errorcode: Errorcode.InvalidRequest }
-    const info = this.table.get(id)
+    const info = this.userTable.get(id)
     if (info == null) return { errorcode: Errorcode.InvalidRequest }
     return { errorcode: Errorcode.Success, point: info.point }
   }
