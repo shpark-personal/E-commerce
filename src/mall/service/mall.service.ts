@@ -9,6 +9,8 @@ import {
 import { ProductItem } from '../models/Product'
 import { Errorcode } from '../models/Enums'
 import {
+  IORDER_REPOSITORY,
+  IOrderRepository,
   IPRODUCT_REPOSITORY,
   IProductRepository,
   ISTOCK_REPOSITORY,
@@ -16,6 +18,8 @@ import {
   IUSER_REPOSITORY,
   IUserRepository,
 } from '../repository/mall.interface'
+import { ValidIdChecker } from '../etc/helper'
+import { OrderEntity } from '../models/Entities'
 
 @Injectable()
 export class MallService {
@@ -28,6 +32,9 @@ export class MallService {
 
     @Inject(ISTOCK_REPOSITORY)
     private readonly stockRepository: IStockRepository,
+
+    @Inject(IORDER_REPOSITORY)
+    private readonly orderRepository: IOrderRepository,
   ) {}
 
   charge(userId: string, amount: number): PointResult {
@@ -53,6 +60,29 @@ export class MallService {
   }
 
   order(userId: string, products: ProductItem[]): SimpleResult {
+    if (!ValidIdChecker(userId)) return { errorcode: Errorcode.InvalidRequest }
+    let lack = false
+    for (let i = 0; i < products.length; i++) {
+      const item = products[i]
+      if (!this.stockRepository.enoughStock(item.id, item.amount)) {
+        lack = true
+        break
+      }
+    }
+    if (lack) return { errorcode: Errorcode.OutOfStock }
+    // fixme : 금액과 수량에 따라 현재 point로 결제 가능한지 확인
+    const date = new Date()
+    const orderForm: OrderEntity = {
+      id: `${date}`,
+      userId: userId,
+      products: products,
+      payment: 0, // fixme : 총 amount
+      createTime: date,
+    }
+    this.orderRepository.create(orderForm)
+    // stockRepository에서
+    // stockTable : 재고 차감
+    // remainStockTable : 재고 추가
     return { errorcode: Errorcode.Success }
   }
 

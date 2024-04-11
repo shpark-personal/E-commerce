@@ -5,12 +5,14 @@ import { TypeOrmModule } from '@nestjs/typeorm'
 import { ProductEntity, StockEntity, User } from '../models/Entities'
 import { UserRepository } from '../repository/user.repository'
 import {
+  IORDER_REPOSITORY,
   IPRODUCT_REPOSITORY,
   ISTOCK_REPOSITORY,
   IUSER_REPOSITORY,
 } from '../repository/mall.interface'
 import { ProductRepository } from '../repository/product.repository'
 import { StockRepository } from '../repository/stock.repository'
+import { OrderRepository } from '../repository/order.repository'
 
 @Module({
   imports: [
@@ -37,6 +39,10 @@ import { StockRepository } from '../repository/stock.repository'
     {
       provide: ISTOCK_REPOSITORY,
       useClass: StockRepository,
+    },
+    {
+      provide: IORDER_REPOSITORY,
+      useClass: OrderRepository,
     },
   ],
 })

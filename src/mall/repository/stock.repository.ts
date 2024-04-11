@@ -23,4 +23,15 @@ export class StockRepository implements IStockRepository {
       })
     return { errorcode: Errorcode.InvalidRequest }
   }
+
+  enoughStock(id: number, amount: number): boolean {
+    this.products
+      .findOne({
+        where: { id: id },
+      })
+      .then(o => {
+        return o.quantity < amount
+      })
+    return false
+  }
 }

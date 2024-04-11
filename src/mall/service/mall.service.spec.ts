@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing'
 import { MallService } from './mall.service'
 import {
+  IORDER_REPOSITORY,
   IPRODUCT_REPOSITORY,
   ISTOCK_REPOSITORY,
   IUSER_REPOSITORY,
@@ -8,6 +9,7 @@ import {
 import { TestRepository } from '../repository/test.repository'
 import { Errorcode } from '../models/Enums'
 import { todo } from 'node:test'
+import { OrderRepository } from '../repository/order.repository'
 
 describe('MallService', () => {
   let service: MallService
@@ -28,6 +30,10 @@ describe('MallService', () => {
         {
           provide: ISTOCK_REPOSITORY,
           useClass: TestRepository,
+        },
+        {
+          provide: IORDER_REPOSITORY,
+          useClass: OrderRepository,
         },
       ],
     }).compile()
@@ -91,6 +97,17 @@ describe('MallService', () => {
     it('fail', async () => {
       const result = await service.getDetail(6)
       expect(result).toEqual({ errorcode: Errorcode.InvalidRequest })
+    })
+  })
+
+  describe('order', () => {
+    it('success', () => {
+      const li = [
+        { id: 1, amount: 3 },
+        { id: 2, amount: 4 },
+      ]
+      const result = service.order('userA', li)
+      expect(result).toEqual(Errorcode.Success)
     })
   })
 })
