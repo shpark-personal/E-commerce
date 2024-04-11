@@ -16,6 +16,7 @@ import {
   IUSER_REPOSITORY,
   IUserRepository,
 } from '../repository/mall.interface'
+import { ValidIdChecker } from '../etc/helper'
 
 @Injectable()
 export class MallService {
@@ -53,6 +54,22 @@ export class MallService {
   }
 
   order(userId: string, products: ProductItem[]): SimpleResult {
+    if (!ValidIdChecker(userId)) return { errorcode: Errorcode.InvalidRequest }
+    let lack = false
+    for (let i = 0; i < products.length; i++) {
+      const item = products[i]
+      if (!this.stockRepository.enoughStock(item.id, item.amount)) {
+        // stockRepository안에서 수량이 충분하면 아무것도 하지 않고 return
+        lack = true
+        break
+      }
+    }
+    if (lack) return { errorcode: Errorcode.OutOfStock }
+    // fixme : 금액과 수량에 따라 현재 point로 결제 가능한지 확인
+    // order form 생성,
+    // stockRepository에서
+    // stockTable : 재고 차감
+    // remainStockTable : 재고 추가
     return { errorcode: Errorcode.Success }
   }
 
