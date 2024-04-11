@@ -27,10 +27,9 @@ export class TestRepository implements IUserRepository {
   }
 
   get(id: string): PointResult {
-    // validation
-    const updated = this.table.get(id) ?? { id: id, point: 0 }
-    return { errorcode: Errorcode.Success, point: updated.point }
+    if (!ValidIdChecker(id)) return { errorcode: Errorcode.InvalidRequest }
+    const info = this.table.get(id)
+    if (info == null) return { errorcode: Errorcode.InvalidRequest }
+    return { errorcode: Errorcode.Success, point: info.point }
   }
-
-  //
 }

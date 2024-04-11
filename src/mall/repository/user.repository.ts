@@ -34,6 +34,7 @@ export class UserRepository implements IUserRepository {
   }
 
   get(id: string): PointResult {
+    if (!ValidIdChecker(id)) return { errorcode: Errorcode.InvalidRequest }
     let newPoint
     this.users
       .findOne({
@@ -44,6 +45,7 @@ export class UserRepository implements IUserRepository {
       })
       .catch(e => {
         console.log(e)
+        return { errorcode: Errorcode.InvalidRequest }
         // fixme  : return
       })
     return { errorcode: Errorcode.Success, point: newPoint }
