@@ -62,7 +62,7 @@ export class TestRepository
     // console.log(this.productTable.size)
   }
 
-  async getDetail(id: number): Promise<ProductResult> {
+  async getProduct(id: number): Promise<ProductResult> {
     //fixme : delete
     // console.log('-------------------')
     // console.log(this.productTable.size)
@@ -76,7 +76,7 @@ export class TestRepository
   }
 
   // STOCK REPOSITORY
-  getQuantity(id: number): StockResult {
+  getStock(id: number): StockResult {
     const stock: StockEntity = this.stockTable.get(id)
     if (stock == null) return { errorcode: Errorcode.InvalidRequest }
     return { errorcode: Errorcode.Success, quantity: stock.quantity }

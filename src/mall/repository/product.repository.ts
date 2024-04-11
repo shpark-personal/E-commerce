@@ -13,7 +13,7 @@ export class ProductRepository implements IProductRepository {
     private readonly products: Repository<ProductEntity>,
   ) {}
 
-  async getDetail(id: number): Promise<ProductResult> {
+  async getProduct(id: number): Promise<ProductResult> {
     this.products
       .findOne({
         where: { id: id },

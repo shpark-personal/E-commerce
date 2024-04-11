@@ -39,8 +39,8 @@ export class MallService {
   }
 
   async getDetail(productId: number): Promise<ProductDetailResult> {
-    const detailInfo = await this.productRepository.getDetail(productId)
-    const stockInfo = this.stockRepository.getQuantity(productId)
+    const detailInfo = await this.productRepository.getProduct(productId)
+    const stockInfo = this.stockRepository.getStock(productId)
     if (detailInfo.errorcode != Errorcode.Success)
       return { errorcode: detailInfo.errorcode }
     if (stockInfo.errorcode != Errorcode.Success)

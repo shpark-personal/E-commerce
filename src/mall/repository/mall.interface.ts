@@ -8,10 +8,10 @@ export interface IUserRepository {
 
 export const IPRODUCT_REPOSITORY = 'Product Repository'
 export interface IProductRepository {
-  getDetail(id: number): Promise<ProductResult>
+  getProduct(id: number): Promise<ProductResult>
 }
 
 export const ISTOCK_REPOSITORY = 'Stock Repository'
 export interface IStockRepository {
-  getQuantity(id: number): StockResult
+  getStock(id: number): StockResult
 }

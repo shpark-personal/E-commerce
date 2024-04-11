@@ -13,7 +13,7 @@ export class StockRepository implements IStockRepository {
     private readonly products: Repository<StockEntity>,
   ) {}
 
-  getQuantity(id: number): StockResult {
+  getStock(id: number): StockResult {
     this.products
       .findOne({
         where: { id: id },
