@@ -12,7 +12,7 @@ export class PointResult {
 
 export class ProductResult {
   errorcode: Errorcode
-  product: Product
+  product?: Product
 }
 
 export class ProductsResult {

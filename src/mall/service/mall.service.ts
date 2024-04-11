@@ -8,13 +8,21 @@ import {
 } from '../models/Result'
 import { ProductItem } from '../models/Product'
 import { Errorcode } from '../models/Enums'
-import { IUSER_REPOSITORY, IUserRepository } from '../repository/mall.interface'
+import {
+  IPRODUCT_REPOSITORY,
+  IProductRepository,
+  IUSER_REPOSITORY,
+  IUserRepository,
+} from '../repository/mall.interface'
 
 @Injectable()
 export class MallService {
   constructor(
     @Inject(IUSER_REPOSITORY)
     private readonly userRepository: IUserRepository,
+
+    @Inject(IPRODUCT_REPOSITORY)
+    private readonly productRepository: IProductRepository,
   ) {}
 
   charge(userId: string, amount: number): PointResult {
@@ -25,13 +33,8 @@ export class MallService {
     return this.userRepository.get(userId)
   }
 
-  getDetail(productId: number): ProductResult {
-    const p = {
-      id: productId,
-      name: '달력',
-      quantity: 3,
-    }
-    return { errorcode: Errorcode.Success, product: p }
+  async getDetail(productId: number): Promise<ProductResult> {
+    return await this.productRepository.getDetail(productId)
   }
 
   order(userId: string, products: ProductItem[]): SimpleResult {
