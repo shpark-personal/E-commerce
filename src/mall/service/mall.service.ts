@@ -79,10 +79,8 @@ export class MallService {
       payment: 0, // fixme : 총 amount
       createTime: date,
     }
+    this.stockRepository.update(orderForm)
     this.orderRepository.create(orderForm)
-    // stockRepository에서
-    // stockTable : 재고 차감
-    // remainStockTable : 재고 추가
     return { errorcode: Errorcode.Success }
   }
 

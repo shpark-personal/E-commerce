@@ -16,8 +16,7 @@ export const ISTOCK_REPOSITORY = 'Stock Repository'
 export interface IStockRepository {
   getStock(id: number): StockResult
   enoughStock(id: number, amount: number): boolean
-  decreaseStock(id: number, amount: number)
-  decreaseRemainStock(id: number, amount: number)
+  update(order: OrderEntity): void
 }
 
 export const IORDER_REPOSITORY = 'Order Repository'

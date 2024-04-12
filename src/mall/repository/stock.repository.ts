@@ -27,7 +27,7 @@ export class StockRepository implements IStockRepository {
   }
 
   enoughStock(id: number, amount: number): boolean {
-    this.products
+    this.stocks
       .findOne({
         where: { id: id },
       })
@@ -35,5 +35,33 @@ export class StockRepository implements IStockRepository {
         return o.quantity < amount
       })
     return false
+  }
+
+  update(order: OrderEntity): void {
+    const products = order.products
+    for (let i = 0; i < products.length; i++) {
+      const item = products[i]
+      this.decreaseStock(item.id, item.amount)
+      const rs: RemainStockEntity = {
+        orderId: order.id,
+        productId: item.id,
+        quantity: item.amount,
+      }
+      this.addRemainStock(rs)
+    }
+  }
+
+  private decreaseStock(id: number, amount: number) {
+    this.stocks
+      .findOne({
+        where: { id: id },
+      })
+      .then(o => {
+        o.quantity = o.quantity - amount
+      })
+  }
+
+  private addRemainStock(rs: RemainStockEntity) {
+    this.remainStocks.save(rs)
   }
 }

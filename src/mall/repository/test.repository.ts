@@ -93,4 +93,22 @@ export class TestRepository
     const stock: StockEntity = this.stockTable.get(id)
     return stock.quantity < amount
   }
+
+  update(order: OrderEntity): void {
+    const products = order.products
+    for (let i = 0; i < products.length; i++) {
+      const item = products[i]
+      this.stockTable.set(item.id, {
+        id: item.id,
+        quantity: this.stockTable.get(item.id).quantity - item.amount,
+      })
+
+      const rs: RemainStockEntity = {
+        orderId: order.id,
+        productId: item.id,
+        quantity: item.amount,
+      }
+      this.remainStockTable.set(rs.orderId, rs)
+    }
+  }
 }
