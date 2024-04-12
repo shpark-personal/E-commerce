@@ -27,6 +27,7 @@ export class TestRepository
 {
   constructor() {
     this.insertSeedProducts()
+    this.insertSeedUsers()
   }
   private readonly userTable: Map<string, User> = new Map()
   private readonly productTable: Map<number, ProductEntity> = new Map()
@@ -60,24 +61,6 @@ export class TestRepository
   }
 
   // PRODUCT REPOSITORY
-  insertSeedProducts(): void {
-    for (let i = 1; i < 6; i++) {
-      this.productTable.set(i, {
-        id: i,
-        name: `product_${i}`,
-        price: 1000,
-      } as ProductEntity)
-
-      this.stockTable.set(i, {
-        id: i,
-        quantity: 10,
-      } as StockEntity)
-    }
-
-    //fixme : delete
-    // console.log(this.productTable.size)
-  }
-
   async getProduct(id: number): Promise<ProductResult> {
     //fixme : delete
     // console.log('-------------------')
@@ -140,5 +123,28 @@ export class TestRepository
 
   createPayment(payment: PaymentEntity): void {
     this.paymentTable.set(payment.id, payment)
+  }
+
+  // SEED
+  private insertSeedProducts(): void {
+    for (let i = 1; i < 6; i++) {
+      this.productTable.set(i, {
+        id: i,
+        name: `product_${i}`,
+        price: 1000,
+      } as ProductEntity)
+
+      this.stockTable.set(i, {
+        id: i,
+        quantity: 10,
+      } as StockEntity)
+    }
+
+    //fixme : delete
+    // console.log(this.productTable.size)
+  }
+
+  private insertSeedUsers(): void {
+    this.userTable.set('userA', { id: 'userA', point: 10000 })
   }
 }
