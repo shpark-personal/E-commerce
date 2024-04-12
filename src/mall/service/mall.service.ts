@@ -62,11 +62,16 @@ export class MallService {
   order(userId: string, products: ProductItem[]): SimpleResult {
     if (!ValidIdChecker(userId)) return { errorcode: Errorcode.InvalidRequest }
     let lack = false
+    let total = 0
     for (let i = 0; i < products.length; i++) {
       const item = products[i]
       if (!this.stockRepository.enoughStock(item.id, item.amount)) {
         lack = true
         break
+      } else {
+        this.productRepository
+          .getProduct(item.id)
+          .then(o => (total += o.product.price * item.amount))
       }
     }
     if (lack) return { errorcode: Errorcode.OutOfStock }
@@ -76,7 +81,7 @@ export class MallService {
       id: `${date}`,
       userId: userId,
       products: products,
-      payment: 0, // fixme : 총 amount
+      payment: total,
       createTime: date,
     }
     this.stockRepository.update(orderForm)

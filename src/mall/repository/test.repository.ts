@@ -57,6 +57,7 @@ export class TestRepository
       this.productTable.set(i, {
         id: i,
         name: `product_${i}`,
+        price: 1000,
       } as ProductEntity)
 
       this.stockTable.set(i, {
@@ -78,7 +79,7 @@ export class TestRepository
     if (product == null) return { errorcode: Errorcode.InvalidRequest }
     return {
       errorcode: Errorcode.Success,
-      product: { id: product.id, name: product.name },
+      product: { id: product.id, name: product.name, price: product.price },
     }
   }
 

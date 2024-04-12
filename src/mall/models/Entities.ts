@@ -17,6 +17,9 @@ export class ProductEntity {
 
   @Column()
   name: string
+
+  @Column()
+  price: number
 }
 
 @Entity()
