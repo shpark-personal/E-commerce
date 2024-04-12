@@ -1,4 +1,4 @@
-import { OrderEntity } from '../models/Entities'
+import { OrderEntity, PaymentEntity } from '../models/Entities'
 import { PointResult, ProductResult, StockResult } from '../models/Result'
 
 export const IUSER_REPOSITORY = 'User Repository'

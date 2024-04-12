@@ -3,6 +3,7 @@ import { PointResult, ProductResult, StockResult } from '../models/Result'
 import { Errorcode } from '../models/Enums'
 import {
   OrderEntity,
+  PaymentEntity,
   ProductEntity,
   RemainStockEntity,
   StockEntity,
