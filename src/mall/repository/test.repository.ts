@@ -10,6 +10,7 @@ import {
   User,
 } from '../models/Entities'
 import {
+  IOrderRepository,
   IProductRepository,
   IStockRepository,
   IUserRepository,
@@ -18,7 +19,11 @@ import { ValidIdChecker, ValidPointChecker } from '../etc/helper'
 
 @Injectable()
 export class TestRepository
-  implements IUserRepository, IProductRepository, IStockRepository
+  implements
+    IUserRepository,
+    IProductRepository,
+    IStockRepository,
+    IOrderRepository
 {
   constructor() {
     this.insertSeedProducts()
@@ -26,7 +31,8 @@ export class TestRepository
   private readonly userTable: Map<string, User> = new Map()
   private readonly productTable: Map<number, ProductEntity> = new Map()
   private readonly stockTable: Map<number, StockEntity> = new Map()
-  private readonly remainStockTable: Map<string, RemainStockEntity> = new Map()
+  private readonly remainStockTable: RemainStockEntity[] = []
+  private readonly orderTable: Map<string, OrderEntity> = new Map()
   private readonly paymentTable: Map<string, PaymentEntity> = new Map()
 
   // USER REPOSITORY
@@ -113,6 +119,23 @@ export class TestRepository
       }
       this.remainStockTable.push(rs)
     }
+  }
+
+  updateByPay(orderId: string): void {
+    const remainStocks = this.remainStockTable.filter(r => r.orderId == orderId)
+    if (remainStocks.length > 0) {
+      // fixme : 성능 개선
+      for (let i = this.remainStockTable.length - 1; i >= 0; i--) {
+        if (remainStocks.includes(this.remainStockTable[i])) {
+          this.remainStockTable.splice(i, 1)
+        }
+      }
+    }
+  }
+
+  // ORDER REPOSITORY
+  create(order: OrderEntity): void {
+    this.orderTable.set(order.id, order)
   }
 
   createPayment(payment: PaymentEntity): void {
