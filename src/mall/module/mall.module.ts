@@ -4,6 +4,7 @@ import { MallService } from '../service/mall.service'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import {
   OrderEntity,
+  PaymentEntity,
   ProductEntity,
   RemainStockEntity,
   StockEntity,
@@ -31,6 +32,7 @@ import { OrderRepository } from '../repository/order.repository'
       RemainStockEntity,
       StockRepository,
       OrderEntity,
+      PaymentEntity,
       OrderRepository,
     ]),
   ],

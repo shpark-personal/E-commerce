@@ -104,6 +104,7 @@ export class MallService {
     }
     this.stockRepository.updateByPay(orderId)
     this.orderRepository.createPayment(paymentForm)
+    // fixme : rankedproduct 전송
     return { errorcode: Errorcode.Success }
   }
 

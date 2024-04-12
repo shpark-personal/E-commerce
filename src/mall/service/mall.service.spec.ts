@@ -9,7 +9,6 @@ import {
 import { TestRepository } from '../repository/test.repository'
 import { Errorcode } from '../models/Enums'
 import { todo } from 'node:test'
-import { OrderRepository } from '../repository/order.repository'
 
 describe('MallService', () => {
   let service: MallService
@@ -33,7 +32,7 @@ describe('MallService', () => {
         },
         {
           provide: IORDER_REPOSITORY,
-          useClass: OrderRepository,
+          useClass: TestRepository,
         },
       ],
     }).compile()
