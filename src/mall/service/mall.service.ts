@@ -59,37 +59,48 @@ export class MallService {
     }
   }
 
-  order(userId: string, products: ProductItem[]): SimpleResult {
-    if (!ValidIdChecker(userId)) return { errorcode: Errorcode.InvalidRequest }
+  order(userId: string, products: ProductItem[]): Promise<SimpleResult> {
+    if (!ValidIdChecker(userId))
+      return Promise.resolve({ errorcode: Errorcode.InvalidRequest })
     let lack = false
     let total = 0
-    for (let i = 0; i < products.length; i++) {
-      const item = products[i]
+    const promises = products.map(item => {
       if (!this.stockRepository.enoughStock(item.id, item.amount)) {
         lack = true
-        break
+        return Promise.resolve()
       } else {
-        this.productRepository
-          .getProduct(item.id)
-          .then(o => (total += o.product.price * item.amount))
+        return this.productRepository.getProduct(item.id).then(o => {
+          total += o.product.price * item.amount
+          console.log(
+            `p : ${o.product.price}, amt : ${item.amount}, t : ${total}`,
+          )
+        })
       }
-    }
+    })
 
-    if (lack) return { errorcode: Errorcode.OutOfStock }
-    if (this.userRepository.get(userId).point < total)
-      return { errorcode: Errorcode.LackOfPoint }
+    return Promise.all(promises).then(() => {
+      if (lack) {
+        return { errorcode: Errorcode.OutOfStock }
+      }
 
-    const date = new Date()
-    const orderForm: OrderEntity = {
-      id: `${date}`,
-      userId: userId,
-      products: products,
-      payment: total,
-      createTime: date,
-    }
-    this.stockRepository.updateByOrder(orderForm)
-    this.orderRepository.create(orderForm)
-    return { errorcode: Errorcode.Success }
+      const user = this.userRepository.get(userId)
+      if (user.point < total) {
+        return { errorcode: Errorcode.LackOfPoint } as SimpleResult
+      }
+
+      console.log(`point: ${user.point}, total: ${total}`)
+      const date = new Date()
+      const orderForm: OrderEntity = {
+        id: `${date}`,
+        userId: userId,
+        products: products,
+        payment: total,
+        createTime: date,
+      }
+      this.stockRepository.updateByOrder(orderForm)
+      this.orderRepository.create(orderForm)
+      return { errorcode: Errorcode.Success } as SimpleResult
+    })
   }
 
   pay(userId: string, orderId: string): SimpleResult {

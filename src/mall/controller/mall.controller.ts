@@ -45,11 +45,11 @@ export class MallController {
 
   // 주문
   @Post('order/:id')
-  order(
+  async order(
     @Param('id') userId: string,
     @Body(ValidationPipe) orderListDto: OrderListDto,
-  ): SimpleResult {
-    return this.mallService.order(userId, orderListDto.products)
+  ): Promise<SimpleResult> {
+    return await this.mallService.order(userId, orderListDto.products)
   }
 
   // 결제
