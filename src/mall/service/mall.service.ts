@@ -19,7 +19,7 @@ import {
   IUserRepository,
 } from '../repository/mall.interface'
 import { ValidIdChecker } from '../etc/helper'
-import { OrderEntity } from '../models/Entities'
+import { OrderEntity, PaymentEntity } from '../models/Entities'
 
 @Injectable()
 export class MallService {
@@ -92,7 +92,18 @@ export class MallService {
     return { errorcode: Errorcode.Success }
   }
 
-  pay(userId: string, products: ProductItem[]): SimpleResult {
+  pay(userId: string, orderId: string): SimpleResult {
+    if (!ValidIdChecker(userId)) return { errorcode: Errorcode.InvalidRequest }
+    // fixme : 결제 실패 or 취소 or 토큰 만료
+    const date = new Date()
+    const paymentForm: PaymentEntity = {
+      id: `${date}`,
+      userId: userId,
+      orderId: orderId,
+      createTime: date,
+    }
+    this.stockRepository.updateByPay(orderId)
+    this.orderRepository.createPayment(paymentForm)
     return { errorcode: Errorcode.Success }
   }
 
