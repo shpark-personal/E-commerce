@@ -74,8 +74,11 @@ export class MallService {
           .then(o => (total += o.product.price * item.amount))
       }
     }
+
     if (lack) return { errorcode: Errorcode.OutOfStock }
-    // fixme : 금액과 수량에 따라 현재 point로 결제 가능한지 확인
+    if (this.userRepository.get(userId).point < total)
+      return { errorcode: Errorcode.LackOfPoint }
+
     const date = new Date()
     const orderForm: OrderEntity = {
       id: `${date}`,
