@@ -2,7 +2,13 @@ import { Module } from '@nestjs/common'
 import { MallController } from '../controller/mall.controller'
 import { MallService } from '../service/mall.service'
 import { TypeOrmModule } from '@nestjs/typeorm'
-import { ProductEntity, StockEntity, User } from '../models/Entities'
+import {
+  OrderEntity,
+  ProductEntity,
+  RemainStockEntity,
+  StockEntity,
+  User,
+} from '../models/Entities'
 import { UserRepository } from '../repository/user.repository'
 import {
   IORDER_REPOSITORY,
@@ -20,9 +26,12 @@ import { OrderRepository } from '../repository/order.repository'
       User,
       UserRepository,
       ProductEntity,
-      StockEntity,
       ProductRepository,
+      StockEntity,
+      RemainStockEntity,
       StockRepository,
+      OrderEntity,
+      OrderRepository,
     ]),
   ],
   controllers: [MallController],
