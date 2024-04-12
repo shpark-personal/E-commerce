@@ -29,6 +29,7 @@ export class TestRepository
     this.insertSeedProducts()
     this.insertSeedUsers()
   }
+
   private readonly userTable: Map<string, User> = new Map()
   private readonly productTable: Map<number, ProductEntity> = new Map()
   private readonly stockTable: Map<number, StockEntity> = new Map()
@@ -60,6 +61,21 @@ export class TestRepository
     return { errorcode: Errorcode.Success, point: info.point }
   }
 
+  use(id: string, point: number): PointResult {
+    if (!ValidIdChecker(id)) return { errorcode: Errorcode.InvalidRequest }
+    let ec = Errorcode.Success
+    try {
+      const user = this.userTable.get(id)
+      user.point = user.point - point
+      this.userTable.set(id, user)
+    } catch {
+      ec = Errorcode.InvalidRequest
+    } finally {
+      const updated = this.userTable.get(id)
+      return { errorcode: ec, point: updated.point }
+    }
+  }
+
   // PRODUCT REPOSITORY
   async getProduct(id: number): Promise<ProductResult> {
     //fixme : delete
@@ -83,6 +99,7 @@ export class TestRepository
 
   enoughStock(id: number, amount: number): boolean {
     const stock: StockEntity = this.stockTable.get(id)
+    console.log(`${id}/ q : ${stock.quantity}, amount : ${amount}`)
     return stock.quantity > amount
   }
 

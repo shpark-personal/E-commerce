@@ -50,4 +50,22 @@ export class UserRepository implements IUserRepository {
       })
     return { errorcode: Errorcode.Success, point: newPoint }
   }
+
+  use(id: string, point: number): PointResult {
+    if (!ValidIdChecker(id)) return { errorcode: Errorcode.InvalidRequest }
+    let newPoint
+    this.users
+      .findOne({
+        where: { id: id },
+      })
+      .then(o => {
+        newPoint = o.point - point
+        o.point = newPoint
+      })
+      .catch(e => {
+        console.log(e)
+        // fixme  : return
+      })
+    return { errorcode: Errorcode.Success, point: newPoint }
+  }
 }
