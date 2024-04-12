@@ -100,7 +100,7 @@ export class TestRepository
 
   enoughStock(id: number, amount: number): boolean {
     const stock: StockEntity = this.stockTable.get(id)
-    return stock.quantity < amount
+    return stock.quantity > amount
   }
 
   updateByOrder(order: OrderEntity): void {

@@ -106,7 +106,7 @@ describe('MallService', () => {
         { id: 2, amount: 4 },
       ]
       const result = service.order('userA', li)
-      expect(result).toEqual(Errorcode.Success)
+      expect(result.errorcode).toEqual(Errorcode.Success)
     })
   })
 })
