@@ -1,10 +1,11 @@
-import { OrderEntity } from '../models/Entities'
+import { OrderEntity, PaymentEntity } from '../models/Entities'
 import { PointResult, ProductResult, StockResult } from '../models/Result'
 
 export const IUSER_REPOSITORY = 'User Repository'
 export interface IUserRepository {
   charge(id: string, point: number): PointResult
   get(id: string): PointResult
+  use(id: string, point: number): PointResult
 }
 
 export const IPRODUCT_REPOSITORY = 'Product Repository'
@@ -16,10 +17,13 @@ export const ISTOCK_REPOSITORY = 'Stock Repository'
 export interface IStockRepository {
   getStock(id: number): StockResult
   enoughStock(id: number, amount: number): boolean
-  update(order: OrderEntity): void
+  updateByOrder(order: OrderEntity): void
+  updateByPay(orderId: string): void
 }
 
 export const IORDER_REPOSITORY = 'Order Repository'
 export interface IOrderRepository {
   create(order: OrderEntity): void
+  createPayment(payment: PaymentEntity): void
+  getOrder(orderId: string): Promise<OrderEntity>
 }

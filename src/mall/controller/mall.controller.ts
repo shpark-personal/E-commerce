@@ -45,20 +45,20 @@ export class MallController {
 
   // 주문
   @Post('order/:id')
-  order(
+  async order(
     @Param('id') userId: string,
     @Body(ValidationPipe) orderListDto: OrderListDto,
-  ): SimpleResult {
-    return this.mallService.order(userId, orderListDto.products)
+  ): Promise<SimpleResult> {
+    return await this.mallService.order(userId, orderListDto.products)
   }
 
   // 결제
   @Post('order/:id/pay')
-  pay(
+  async pay(
     @Param('id') userId: string,
-    @Body(ValidationPipe) orderListDto: OrderListDto,
-  ): SimpleResult {
-    return this.mallService.pay(userId, orderListDto.products)
+    @Body(ValidationPipe) orderId: string,
+  ): Promise<SimpleResult> {
+    return await this.mallService.pay(userId, orderId)
   }
 
   // 상위 상품 조회

@@ -9,7 +9,6 @@ import {
 import { TestRepository } from '../repository/test.repository'
 import { Errorcode } from '../models/Enums'
 import { todo } from 'node:test'
-import { OrderRepository } from '../repository/order.repository'
 
 describe('MallService', () => {
   let service: MallService
@@ -33,7 +32,7 @@ describe('MallService', () => {
         },
         {
           provide: IORDER_REPOSITORY,
-          useClass: OrderRepository,
+          useClass: TestRepository,
         },
       ],
     }).compile()
@@ -73,7 +72,7 @@ describe('MallService', () => {
     })
 
     it('fail : userId invalid', () => {
-      const result = service.getPoint('userA')
+      const result = service.getPoint('userC')
       expect(result).toEqual({ errorcode: Errorcode.InvalidRequest })
     })
 
@@ -101,13 +100,28 @@ describe('MallService', () => {
   })
 
   describe('order', () => {
-    it('success', () => {
+    it('success', async () => {
       const li = [
         { id: 1, amount: 3 },
         { id: 2, amount: 4 },
       ]
-      const result = service.order('userA', li)
-      expect(result).toEqual(Errorcode.Success)
+      const result = await service.order('userA', li)
+      expect(result.errorcode).toEqual(Errorcode.Success)
+    })
+
+    it('fail : out of stock', async () => {
+      const li = [{ id: 1, amount: 100 }]
+      const result = await service.order('userA', li)
+      expect(result.errorcode).toEqual(Errorcode.OutOfStock)
+    })
+
+    it('fail : lack of point', async () => {
+      const li = [
+        { id: 1, amount: 9 },
+        { id: 2, amount: 4 },
+      ]
+      const result = await service.order('userA', li)
+      expect(result.errorcode).toEqual(Errorcode.LackOfPoint)
     })
   })
 })

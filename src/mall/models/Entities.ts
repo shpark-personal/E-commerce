@@ -60,3 +60,18 @@ export class OrderEntity {
   @Column()
   createTime: Date
 }
+
+@Entity()
+export class PaymentEntity {
+  @PrimaryGeneratedColumn()
+  id: string
+
+  @Column()
+  userId: string
+
+  @Column()
+  orderId: string
+
+  @Column()
+  createTime: Date
+}
