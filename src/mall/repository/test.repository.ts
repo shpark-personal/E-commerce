@@ -1,7 +1,13 @@
 import { Injectable } from '@nestjs/common'
 import { PointResult, ProductResult, StockResult } from '../models/Result'
 import { Errorcode } from '../models/Enums'
-import { ProductEntity, StockEntity, User } from '../models/Entities'
+import {
+  OrderEntity,
+  ProductEntity,
+  RemainStockEntity,
+  StockEntity,
+  User,
+} from '../models/Entities'
 import {
   IProductRepository,
   IStockRepository,
@@ -19,6 +25,7 @@ export class TestRepository
   private readonly userTable: Map<string, User> = new Map()
   private readonly productTable: Map<number, ProductEntity> = new Map()
   private readonly stockTable: Map<number, StockEntity> = new Map()
+  private readonly remainStockTable: Map<string, RemainStockEntity> = new Map()
 
   // USER REPOSITORY
   charge(id: string, point: number): PointResult {

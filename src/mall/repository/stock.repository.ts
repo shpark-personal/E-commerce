@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
-import { StockEntity } from '../models/Entities'
+import { OrderEntity, RemainStockEntity, StockEntity } from '../models/Entities'
 import { Errorcode } from '../models/Enums'
 import { StockResult } from '../models/Result'
 import { IStockRepository } from './mall.interface'
@@ -10,11 +10,13 @@ import { IStockRepository } from './mall.interface'
 export class StockRepository implements IStockRepository {
   constructor(
     @InjectRepository(StockEntity)
-    private readonly products: Repository<StockEntity>,
+    private readonly stocks: Repository<StockEntity>,
+    @InjectRepository(RemainStockEntity)
+    private readonly remainStocks: Repository<RemainStockEntity>,
   ) {}
 
   getStock(id: number): StockResult {
-    this.products
+    this.stocks
       .findOne({
         where: { id: id },
       })

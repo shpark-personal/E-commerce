@@ -1,4 +1,4 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm'
+import { Column, Entity, PrimaryColumn, PrimaryGeneratedColumn } from 'typeorm'
 import { ProductItem } from './Product'
 
 @Entity()
@@ -23,6 +23,18 @@ export class ProductEntity {
 export class StockEntity {
   @PrimaryGeneratedColumn()
   id: number
+
+  @Column()
+  quantity: number
+}
+
+@Entity()
+export class RemainStockEntity {
+  @PrimaryColumn()
+  orderId: string
+
+  @Column()
+  productId: number
 
   @Column()
   quantity: number
