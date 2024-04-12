@@ -56,9 +56,9 @@ export class MallController {
   @Post('order/:id/pay')
   pay(
     @Param('id') userId: string,
-    @Body(ValidationPipe) orderListDto: OrderListDto,
+    @Body(ValidationPipe) orderId: string,
   ): SimpleResult {
-    return this.mallService.pay(userId, orderListDto.products)
+    return this.mallService.pay(userId, orderId)
   }
 
   // 상위 상품 조회
