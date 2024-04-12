@@ -27,6 +27,7 @@ export class TestRepository
   private readonly productTable: Map<number, ProductEntity> = new Map()
   private readonly stockTable: Map<number, StockEntity> = new Map()
   private readonly remainStockTable: Map<string, RemainStockEntity> = new Map()
+  private readonly paymentTable: Map<string, PaymentEntity> = new Map()
 
   // USER REPOSITORY
   charge(id: string, point: number): PointResult {
@@ -112,5 +113,9 @@ export class TestRepository
       }
       this.remainStockTable.push(rs)
     }
+  }
+
+  createPayment(payment: PaymentEntity): void {
+    this.paymentTable.set(payment.id, payment)
   }
 }

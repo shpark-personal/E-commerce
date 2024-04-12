@@ -23,4 +23,5 @@ export interface IStockRepository {
 export const IORDER_REPOSITORY = 'Order Repository'
 export interface IOrderRepository {
   create(order: OrderEntity): void
+  createPayment(payment: PaymentEntity): void
 }

@@ -16,4 +16,8 @@ export class OrderRepository implements IOrderRepository {
   create(order: OrderEntity): void {
     this.orders.save(order)
   }
+
+  createPayment(payment: PaymentEntity): void {
+    this.payments.save(payment)
+  }
 }
