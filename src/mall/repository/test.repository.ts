@@ -125,6 +125,10 @@ export class TestRepository
     this.paymentTable.set(payment.id, payment)
   }
 
+  async getOrder(orderId: string): Promise<OrderEntity> {
+    return this.orderTable.get(orderId)
+  }
+
   // SEED
   private insertSeedProducts(): void {
     for (let i = 1; i < 6; i++) {

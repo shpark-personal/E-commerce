@@ -24,4 +24,5 @@ export const IORDER_REPOSITORY = 'Order Repository'
 export interface IOrderRepository {
   create(order: OrderEntity): void
   createPayment(payment: PaymentEntity): void
+  getOrder(orderId: string): Promise<OrderEntity>
 }

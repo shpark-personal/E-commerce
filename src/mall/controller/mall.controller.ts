@@ -54,11 +54,11 @@ export class MallController {
 
   // 결제
   @Post('order/:id/pay')
-  pay(
+  async pay(
     @Param('id') userId: string,
     @Body(ValidationPipe) orderId: string,
-  ): SimpleResult {
-    return this.mallService.pay(userId, orderId)
+  ): Promise<SimpleResult> {
+    return await this.mallService.pay(userId, orderId)
   }
 
   // 상위 상품 조회

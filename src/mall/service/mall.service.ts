@@ -103,7 +103,7 @@ export class MallService {
     })
   }
 
-  pay(userId: string, orderId: string): SimpleResult {
+  async pay(userId: string, orderId: string): Promise<SimpleResult> {
     if (!ValidIdChecker(userId)) return { errorcode: Errorcode.InvalidRequest }
     // fixme : 결제 실패 or 취소 or 토큰 만료
     const date = new Date()
@@ -115,6 +115,7 @@ export class MallService {
     }
     this.stockRepository.updateByPay(orderId)
     this.orderRepository.createPayment(paymentForm)
+    const order = await this.orderRepository.getOrder(orderId)
     // fixme : rankedproduct 전송
     return { errorcode: Errorcode.Success }
   }

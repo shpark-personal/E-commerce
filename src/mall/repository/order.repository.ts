@@ -20,4 +20,10 @@ export class OrderRepository implements IOrderRepository {
   createPayment(payment: PaymentEntity): void {
     this.payments.save(payment)
   }
+
+  async getOrder(orderId: string): Promise<OrderEntity> {
+    return await this.orders.findOne({
+      where: { id: orderId },
+    })
+  }
 }
