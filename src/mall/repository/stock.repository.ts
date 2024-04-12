@@ -37,7 +37,7 @@ export class StockRepository implements IStockRepository {
     return false
   }
 
-  update(order: OrderEntity): void {
+  updateByOrder(order: OrderEntity): void {
     const products = order.products
     for (let i = 0; i < products.length; i++) {
       const item = products[i]
@@ -49,6 +49,21 @@ export class StockRepository implements IStockRepository {
       }
       this.addRemainStock(rs)
     }
+  }
+
+  updateByPay(orderId: string): void {
+    this.remainStocks
+      .find({
+        where: { orderId: orderId },
+      })
+      .then(remainStocks => {
+        if (remainStocks.length > 0) {
+          const deletePromises = remainStocks.map(remainStock => {
+            return this.remainStocks.remove(remainStock)
+          })
+          return Promise.all(deletePromises)
+        }
+      })
   }
 
   private decreaseStock(id: number, amount: number) {

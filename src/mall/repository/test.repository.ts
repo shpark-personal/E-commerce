@@ -96,7 +96,7 @@ export class TestRepository
     return stock.quantity < amount
   }
 
-  update(order: OrderEntity): void {
+  updateByOrder(order: OrderEntity): void {
     const products = order.products
     for (let i = 0; i < products.length; i++) {
       const item = products[i]
@@ -110,7 +110,7 @@ export class TestRepository
         productId: item.id,
         quantity: item.amount,
       }
-      this.remainStockTable.set(rs.orderId, rs)
+      this.remainStockTable.push(rs)
     }
   }
 }

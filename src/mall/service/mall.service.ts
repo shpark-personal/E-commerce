@@ -87,7 +87,7 @@ export class MallService {
       payment: total,
       createTime: date,
     }
-    this.stockRepository.update(orderForm)
+    this.stockRepository.updateByOrder(orderForm)
     this.orderRepository.create(orderForm)
     return { errorcode: Errorcode.Success }
   }
