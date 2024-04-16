@@ -109,7 +109,7 @@
   
 
 ### ERD 설계
-![image](https://github.com/shpark-personal/E-commerce/assets/58277594/001a8db8-7d28-482d-a641-d280c3788029)
+![image](https://github.com/shpark-personal/E-commerce/assets/58277594/3762fb28-3cda-4599-9420-bffc9879ddd6)
 
 
 ### API 미리보기
