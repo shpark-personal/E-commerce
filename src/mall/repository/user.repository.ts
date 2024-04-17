@@ -36,6 +36,7 @@ export class UserRepository implements IUserRepository {
   get(id: string): PointResult {
     if (!ValidIdChecker(id)) return { errorcode: Errorcode.InvalidRequest }
     let newPoint
+    let ec = Errorcode.Success
     this.users
       .findOne({
         where: { id: id },
@@ -45,15 +46,15 @@ export class UserRepository implements IUserRepository {
       })
       .catch(e => {
         console.log(e)
-        return { errorcode: Errorcode.InvalidRequest }
-        // fixme  : return
+        ec = Errorcode.InvalidRequest
       })
-    return { errorcode: Errorcode.Success, point: newPoint }
+    return { errorcode: ec, point: ec == Errorcode.Success ? newPoint : null }
   }
 
   use(id: string, point: number): PointResult {
     if (!ValidIdChecker(id)) return { errorcode: Errorcode.InvalidRequest }
     let newPoint
+    let ec = Errorcode.Success
     this.users
       .findOne({
         where: { id: id },
@@ -64,8 +65,8 @@ export class UserRepository implements IUserRepository {
       })
       .catch(e => {
         console.log(e)
-        // fixme  : return
+        ec = Errorcode.InvalidRequest
       })
-    return { errorcode: Errorcode.Success, point: newPoint }
+    return { errorcode: ec, point: ec == Errorcode.Success ? newPoint : null }
   }
 }
