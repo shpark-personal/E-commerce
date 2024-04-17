@@ -14,13 +14,16 @@ export class ProductRepository implements IProductRepository {
   ) {}
 
   async getProduct(id: number): Promise<ProductResult> {
-    this.products
+    return this.products
       .findOne({
         where: { id: id },
       })
       .then(o => {
         return { errorcode: Errorcode.Success, product: o }
       })
-    return { errorcode: Errorcode.InvalidRequest }
+      .catch(e => {
+        console.log(e)
+        return { errorcode: Errorcode.InvalidRequest }
+      })
   }
 }
