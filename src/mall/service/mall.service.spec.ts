@@ -47,24 +47,24 @@ describe('MallService', () => {
   })
 
   describe('charge point', () => {
-    it('success', () => {
-      const result = service.charge('userA', 10)
+    it('success', async () => {
+      const result = await service.charge('userA', 10)
       expect(result).toEqual({ errorcode: Errorcode.Success, point: 10 })
     })
 
-    it('fail : userId invalid', () => {
-      const result = service.charge('', 10)
+    it('fail : userId invalid', async () => {
+      const result = await service.charge('', 10)
       expect(result).toEqual({ errorcode: Errorcode.InvalidRequest })
     })
 
-    it('fail : minus point', () => {
-      const result = service.charge('userA', -10)
+    it('fail : minus point', async () => {
+      const result = await service.charge('userA', -10)
       expect(result).toEqual({ errorcode: Errorcode.InvalidAmount })
     })
   })
 
   describe('get point', () => {
-    beforeEach(() => service.charge('userB', 10))
+    beforeEach(async () => await service.charge('userB', 10))
 
     it('success', () => {
       const result = service.getPoint('userB')

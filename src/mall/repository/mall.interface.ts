@@ -3,7 +3,7 @@ import { PointResult, ProductResult, StockResult } from '../models/Result'
 
 export const IUSER_REPOSITORY = 'User Repository'
 export interface IUserRepository {
-  charge(id: string, point: number): PointResult
+  charge(id: string, point: number): Promise<PointResult>
   get(id: string): PointResult
   use(id: string, point: number): PointResult
 }

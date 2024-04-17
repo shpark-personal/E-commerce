@@ -38,7 +38,7 @@ export class TestRepository
   private readonly paymentTable: Map<string, PaymentEntity> = new Map()
 
   // USER REPOSITORY
-  charge(id: string, point: number): PointResult {
+  async charge(id: string, point: number): Promise<PointResult> {
     if (!ValidIdChecker(id)) return { errorcode: Errorcode.InvalidRequest }
     if (!ValidPointChecker(point)) return { errorcode: Errorcode.InvalidAmount }
 

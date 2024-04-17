@@ -37,8 +37,8 @@ export class MallService {
     private readonly orderRepository: IOrderRepository,
   ) {}
 
-  charge(userId: string, amount: number): PointResult {
-    return this.userRepository.charge(userId, amount)
+  async charge(userId: string, amount: number): Promise<PointResult> {
+    return await this.userRepository.charge(userId, amount)
   }
 
   getPoint(userId: string): PointResult {

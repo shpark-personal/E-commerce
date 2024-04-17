@@ -22,11 +22,11 @@ export class MallController {
 
   // 잔액 충전
   @Patch('user/:id/charge')
-  charge(
+  async charge(
     @Param('id') userId: string,
     @Body(ValidationPipe) chargeDto: ChargeDto,
-  ): PointResult {
-    return this.mallService.charge(userId, chargeDto.amount)
+  ): Promise<PointResult> {
+    return await this.mallService.charge(userId, chargeDto.amount)
   }
 
   // 잔액 조회
