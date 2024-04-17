@@ -66,13 +66,13 @@ describe('MallService', () => {
   describe('get point', () => {
     beforeEach(async () => await service.charge('userB', 10))
 
-    it('success', () => {
-      const result = service.getPoint('userB')
+    it('success', async () => {
+      const result = await service.getPoint('userB')
       expect(result).toEqual({ errorcode: Errorcode.Success, point: 10 })
     })
 
-    it('fail : userId invalid', () => {
-      const result = service.getPoint('userC')
+    it('fail : userId invalid', async () => {
+      const result = await service.getPoint('userC')
       expect(result).toEqual({ errorcode: Errorcode.InvalidRequest })
     })
 

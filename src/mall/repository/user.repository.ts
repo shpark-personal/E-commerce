@@ -31,40 +31,36 @@ export class UserRepository implements IUserRepository {
       })
   }
 
-  get(id: string): PointResult {
+  async get(id: string): Promise<PointResult> {
     if (!ValidIdChecker(id)) return { errorcode: Errorcode.InvalidRequest }
-    let newPoint
-    let ec = Errorcode.Success
-    this.users
+    return this.users
       .findOne({
         where: { id: id },
       })
       .then(o => {
-        newPoint = o.point
+        return { errorcode: Errorcode.Success, point: o.point }
       })
       .catch(e => {
         console.log(e)
-        ec = Errorcode.InvalidRequest
+        return { errorcode: Errorcode.InvalidRequest }
       })
-    return { errorcode: ec, point: ec == Errorcode.Success ? newPoint : null }
   }
 
-  use(id: string, point: number): PointResult {
+  async use(id: string, point: number): Promise<PointResult> {
     if (!ValidIdChecker(id)) return { errorcode: Errorcode.InvalidRequest }
     let newPoint
-    let ec = Errorcode.Success
-    this.users
+    return this.users
       .findOne({
         where: { id: id },
       })
       .then(o => {
         newPoint = o.point - point
         o.point = newPoint
+        return { errorcode: Errorcode.Success, point: newPoint }
       })
       .catch(e => {
         console.log(e)
-        ec = Errorcode.InvalidRequest
+        return { errorcode: Errorcode.InvalidRequest }
       })
-    return { errorcode: ec, point: ec == Errorcode.Success ? newPoint : null }
   }
 }

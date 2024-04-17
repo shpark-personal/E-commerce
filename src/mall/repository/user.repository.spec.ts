@@ -12,6 +12,7 @@ describe('userRepositoryTest', () => {
       id: 'userA',
       point: 10,
     }
+    jest.spyOn(repository['users'], 'save').mockResolvedValue(user)
     jest.spyOn(repository['users'], 'findOne').mockResolvedValue(user)
 
     expect(await repository.charge('userA', 10)).toEqual({

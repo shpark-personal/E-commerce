@@ -41,8 +41,8 @@ export class MallService {
     return await this.userRepository.charge(userId, amount)
   }
 
-  getPoint(userId: string): PointResult {
-    return this.userRepository.get(userId)
+  async getPoint(userId: string): Promise<PointResult> {
+    return await this.userRepository.get(userId)
   }
 
   async getDetail(productId: number): Promise<ProductDetailResult> {
@@ -78,12 +78,12 @@ export class MallService {
       }
     })
 
-    return Promise.all(promises).then(() => {
+    return Promise.all(promises).then(async () => {
       if (lack) {
         return { errorcode: Errorcode.OutOfStock }
       }
 
-      const user = this.userRepository.get(userId)
+      const user = await this.userRepository.get(userId)
       if (user.point < total) {
         return { errorcode: Errorcode.LackOfPoint } as SimpleResult
       }
@@ -116,7 +116,7 @@ export class MallService {
     this.stockRepository.updateByPay(orderId)
     this.orderRepository.createPayment(paymentForm)
     const order = await this.orderRepository.getOrder(orderId)
-    this.userRepository.use(userId, order.payment)
+    await this.userRepository.use(userId, order.payment)
     // fixme : rankedproduct 전송
     return { errorcode: Errorcode.Success }
   }

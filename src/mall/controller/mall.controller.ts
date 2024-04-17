@@ -31,8 +31,8 @@ export class MallController {
 
   // 잔액 조회
   @Get('user/:id/point')
-  point(@Param('id') userId: string): PointResult {
-    return this.mallService.getPoint(userId)
+  async point(@Param('id') userId: string): Promise<PointResult> {
+    return await this.mallService.getPoint(userId)
   }
 
   // 상품 조회

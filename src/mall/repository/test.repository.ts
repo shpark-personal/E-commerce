@@ -54,14 +54,14 @@ export class TestRepository
     }
   }
 
-  get(id: string): PointResult {
+  async get(id: string): Promise<PointResult> {
     if (!ValidIdChecker(id)) return { errorcode: Errorcode.InvalidRequest }
     const info = this.userTable.get(id)
     if (info == null) return { errorcode: Errorcode.InvalidRequest }
     return { errorcode: Errorcode.Success, point: info.point }
   }
 
-  use(id: string, point: number): PointResult {
+  async use(id: string, point: number): Promise<PointResult> {
     if (!ValidIdChecker(id)) return { errorcode: Errorcode.InvalidRequest }
     let ec = Errorcode.Success
     try {
