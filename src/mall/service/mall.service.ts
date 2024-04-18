@@ -47,7 +47,7 @@ export class MallService {
 
   async getDetail(productId: number): Promise<ProductDetailResult> {
     const detailInfo = await this.productRepository.getProduct(productId)
-    const stockInfo = this.stockRepository.getStock(productId)
+    const stockInfo = await this.stockRepository.getStock(productId)
     if (detailInfo.errorcode != Errorcode.Success)
       return { errorcode: detailInfo.errorcode }
     if (stockInfo.errorcode != Errorcode.Success)
@@ -59,48 +59,47 @@ export class MallService {
     }
   }
 
-  order(userId: string, products: ProductItem[]): Promise<SimpleResult> {
+  async order(userId: string, products: ProductItem[]): Promise<SimpleResult> {
     if (!ValidIdChecker(userId))
       return Promise.resolve({ errorcode: Errorcode.InvalidRequest })
     let lack = false
     let total = 0
-    const promises = products.map(item => {
-      if (!this.stockRepository.enoughStock(item.id, item.amount)) {
+    products.map(async item => {
+      const result = await this.stockRepository.enoughStock(
+        item.id,
+        item.amount,
+      )
+      console.log(result)
+      if (!result) {
         lack = true
-        return Promise.resolve()
-      } else {
-        return this.productRepository.getProduct(item.id).then(o => {
-          total += o.product.price * item.amount
-          console.log(
-            `p : ${o.product.price}, amt : ${item.amount}, t : ${total}`,
-          )
-        })
+        return
       }
+      return this.productRepository.getProduct(item.id).then(o => {
+        total += o.product.price * item.amount
+        console.log(
+          `p : ${o.product.price}, amt : ${item.amount}, t : ${total}`,
+        )
+      })
     })
+    if (lack) return Promise.resolve({ errorcode: Errorcode.OutOfStock })
 
-    return Promise.all(promises).then(async () => {
-      if (lack) {
-        return { errorcode: Errorcode.OutOfStock }
-      }
+    const user = await this.userRepository.get(userId)
+    if (user.point < total) {
+      return Promise.resolve({ errorcode: Errorcode.LackOfPoint })
+    }
 
-      const user = await this.userRepository.get(userId)
-      if (user.point < total) {
-        return { errorcode: Errorcode.LackOfPoint } as SimpleResult
-      }
-
-      console.log(`point: ${user.point}, total: ${total}`)
-      const date = new Date()
-      const orderForm: OrderEntity = {
-        id: `${date}`,
-        userId: userId,
-        products: products,
-        payment: total,
-        createTime: date,
-      }
-      this.stockRepository.updateByOrder(orderForm)
-      this.orderRepository.create(orderForm)
-      return { errorcode: Errorcode.Success } as SimpleResult
-    })
+    console.log(`point: ${user.point}, total: ${total}`)
+    const date = new Date()
+    const orderForm: OrderEntity = {
+      id: `${date}`,
+      userId: userId,
+      products: products,
+      payment: total,
+      createTime: date,
+    }
+    await this.stockRepository.updateByOrder(orderForm)
+    await this.orderRepository.create(orderForm)
+    return Promise.resolve({ errorcode: Errorcode.Success })
   }
 
   async pay(userId: string, orderId: string): Promise<SimpleResult> {

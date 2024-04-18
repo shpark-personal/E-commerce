@@ -91,19 +91,19 @@ export class TestRepository
   }
 
   // STOCK REPOSITORY
-  getStock(id: number): StockResult {
+  async getStock(id: number): Promise<StockResult> {
     const stock: StockEntity = this.stockTable.get(id)
     if (stock == null) return { errorcode: Errorcode.InvalidRequest }
     return { errorcode: Errorcode.Success, quantity: stock.quantity }
   }
 
-  enoughStock(id: number, amount: number): boolean {
+  async enoughStock(id: number, amount: number): Promise<boolean> {
     const stock: StockEntity = this.stockTable.get(id)
     console.log(`${id}/ q : ${stock.quantity}, amount : ${amount}`)
     return stock.quantity > amount
   }
 
-  updateByOrder(order: OrderEntity): void {
+  async updateByOrder(order: OrderEntity): Promise<void> {
     const products = order.products
     for (let i = 0; i < products.length; i++) {
       const item = products[i]
@@ -121,7 +121,7 @@ export class TestRepository
     }
   }
 
-  updateByPay(orderId: string): void {
+  async updateByPay(orderId: string): Promise<void> {
     const remainStocks = this.remainStockTable.filter(r => r.orderId == orderId)
     if (remainStocks.length > 0) {
       // fixme : 성능 개선
