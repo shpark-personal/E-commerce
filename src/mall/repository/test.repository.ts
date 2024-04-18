@@ -134,12 +134,12 @@ export class TestRepository
   }
 
   // ORDER REPOSITORY
-  create(order: OrderEntity): void {
-    this.orderTable.set(order.id, order)
+  async create(order: OrderEntity): Promise<void> {
+    await this.orderTable.set(order.id, order)
   }
 
-  createPayment(payment: PaymentEntity): void {
-    this.paymentTable.set(payment.id, payment)
+  async createPayment(payment: PaymentEntity): Promise<void> {
+    await this.paymentTable.set(payment.id, payment)
   }
 
   async getOrder(orderId: string): Promise<OrderEntity> {
