@@ -15,29 +15,36 @@ export class StockRepository implements IStockRepository {
     private readonly remainStocks: Repository<RemainStockEntity>,
   ) {}
 
-  getStock(id: number): StockResult {
-    this.stocks
+  async getStock(id: number): Promise<StockResult> {
+    return await this.stocks
       .findOne({
         where: { id: id },
       })
       .then(o => {
         return { errorcode: Errorcode.Success, product: o.quantity }
       })
-    return { errorcode: Errorcode.InvalidRequest }
+      .catch(e => {
+        console.log(e)
+        return { errorcode: Errorcode.InvalidRequest }
+      })
   }
 
-  enoughStock(id: number, amount: number): boolean {
-    this.stocks
+  async enoughStock(id: number, amount: number): Promise<boolean> {
+    return await this.stocks
       .findOne({
         where: { id: id },
       })
       .then(o => {
-        return o.quantity < amount
+        return o.quantity >= amount
       })
-    return false
+      .catch(e => {
+        // fixme : return 은 invalidrequest로 한다
+        console.log(e)
+        return false
+      })
   }
 
-  updateByOrder(order: OrderEntity): void {
+  async updateByOrder(order: OrderEntity): Promise<void> {
     const products = order.products
     for (let i = 0; i < products.length; i++) {
       const item = products[i]
@@ -47,12 +54,12 @@ export class StockRepository implements IStockRepository {
         productId: item.id,
         quantity: item.amount,
       }
-      this.addRemainStock(rs)
+      await this.addRemainStock(rs)
     }
   }
 
-  updateByPay(orderId: string): void {
-    this.remainStocks
+  async updateByPay(orderId: string): Promise<void> {
+    await this.remainStocks
       .find({
         where: { orderId: orderId },
       })
@@ -74,9 +81,10 @@ export class StockRepository implements IStockRepository {
       .then(o => {
         o.quantity = o.quantity - amount
       })
+    // fixme : error
   }
 
-  private addRemainStock(rs: RemainStockEntity) {
-    this.remainStocks.save(rs)
+  private async addRemainStock(rs: RemainStockEntity) {
+    await this.remainStocks.save(rs)
   }
 }

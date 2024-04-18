@@ -22,17 +22,17 @@ export class MallController {
 
   // 잔액 충전
   @Patch('user/:id/charge')
-  charge(
+  async charge(
     @Param('id') userId: string,
     @Body(ValidationPipe) chargeDto: ChargeDto,
-  ): PointResult {
-    return this.mallService.charge(userId, chargeDto.amount)
+  ): Promise<PointResult> {
+    return await this.mallService.charge(userId, chargeDto.amount)
   }
 
   // 잔액 조회
   @Get('user/:id/point')
-  point(@Param('id') userId: string): PointResult {
-    return this.mallService.getPoint(userId)
+  async point(@Param('id') userId: string): Promise<PointResult> {
+    return await this.mallService.getPoint(userId)
   }
 
   // 상품 조회

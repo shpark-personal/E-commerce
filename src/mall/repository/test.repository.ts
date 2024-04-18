@@ -38,7 +38,7 @@ export class TestRepository
   private readonly paymentTable: Map<string, PaymentEntity> = new Map()
 
   // USER REPOSITORY
-  charge(id: string, point: number): PointResult {
+  async charge(id: string, point: number): Promise<PointResult> {
     if (!ValidIdChecker(id)) return { errorcode: Errorcode.InvalidRequest }
     if (!ValidPointChecker(point)) return { errorcode: Errorcode.InvalidAmount }
 
@@ -54,14 +54,14 @@ export class TestRepository
     }
   }
 
-  get(id: string): PointResult {
+  async get(id: string): Promise<PointResult> {
     if (!ValidIdChecker(id)) return { errorcode: Errorcode.InvalidRequest }
     const info = this.userTable.get(id)
     if (info == null) return { errorcode: Errorcode.InvalidRequest }
     return { errorcode: Errorcode.Success, point: info.point }
   }
 
-  use(id: string, point: number): PointResult {
+  async use(id: string, point: number): Promise<PointResult> {
     if (!ValidIdChecker(id)) return { errorcode: Errorcode.InvalidRequest }
     let ec = Errorcode.Success
     try {
@@ -91,19 +91,19 @@ export class TestRepository
   }
 
   // STOCK REPOSITORY
-  getStock(id: number): StockResult {
+  async getStock(id: number): Promise<StockResult> {
     const stock: StockEntity = this.stockTable.get(id)
     if (stock == null) return { errorcode: Errorcode.InvalidRequest }
     return { errorcode: Errorcode.Success, quantity: stock.quantity }
   }
 
-  enoughStock(id: number, amount: number): boolean {
+  async enoughStock(id: number, amount: number): Promise<boolean> {
     const stock: StockEntity = this.stockTable.get(id)
     console.log(`${id}/ q : ${stock.quantity}, amount : ${amount}`)
     return stock.quantity > amount
   }
 
-  updateByOrder(order: OrderEntity): void {
+  async updateByOrder(order: OrderEntity): Promise<void> {
     const products = order.products
     for (let i = 0; i < products.length; i++) {
       const item = products[i]
@@ -121,7 +121,7 @@ export class TestRepository
     }
   }
 
-  updateByPay(orderId: string): void {
+  async updateByPay(orderId: string): Promise<void> {
     const remainStocks = this.remainStockTable.filter(r => r.orderId == orderId)
     if (remainStocks.length > 0) {
       // fixme : 성능 개선
@@ -134,12 +134,12 @@ export class TestRepository
   }
 
   // ORDER REPOSITORY
-  create(order: OrderEntity): void {
-    this.orderTable.set(order.id, order)
+  async create(order: OrderEntity): Promise<void> {
+    await this.orderTable.set(order.id, order)
   }
 
-  createPayment(payment: PaymentEntity): void {
-    this.paymentTable.set(payment.id, payment)
+  async createPayment(payment: PaymentEntity): Promise<void> {
+    await this.paymentTable.set(payment.id, payment)
   }
 
   async getOrder(orderId: string): Promise<OrderEntity> {

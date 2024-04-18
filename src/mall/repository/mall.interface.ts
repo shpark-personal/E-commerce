@@ -3,9 +3,9 @@ import { PointResult, ProductResult, StockResult } from '../models/Result'
 
 export const IUSER_REPOSITORY = 'User Repository'
 export interface IUserRepository {
-  charge(id: string, point: number): PointResult
-  get(id: string): PointResult
-  use(id: string, point: number): PointResult
+  charge(id: string, point: number): Promise<PointResult>
+  get(id: string): Promise<PointResult>
+  use(id: string, point: number): Promise<PointResult>
 }
 
 export const IPRODUCT_REPOSITORY = 'Product Repository'
@@ -15,15 +15,15 @@ export interface IProductRepository {
 
 export const ISTOCK_REPOSITORY = 'Stock Repository'
 export interface IStockRepository {
-  getStock(id: number): StockResult
-  enoughStock(id: number, amount: number): boolean
-  updateByOrder(order: OrderEntity): void
-  updateByPay(orderId: string): void
+  getStock(id: number): Promise<StockResult>
+  enoughStock(id: number, amount: number): Promise<boolean>
+  updateByOrder(order: OrderEntity): Promise<void>
+  updateByPay(orderId: string): Promise<void>
 }
 
 export const IORDER_REPOSITORY = 'Order Repository'
 export interface IOrderRepository {
-  create(order: OrderEntity): void
-  createPayment(payment: PaymentEntity): void
+  create(order: OrderEntity): Promise<void>
+  createPayment(payment: PaymentEntity): Promise<void>
   getOrder(orderId: string): Promise<OrderEntity>
 }
