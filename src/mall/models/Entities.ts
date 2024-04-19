@@ -1,9 +1,9 @@
-import { Column, Entity, PrimaryColumn, PrimaryGeneratedColumn } from 'typeorm'
+import { Column, Entity, PrimaryColumn } from 'typeorm'
 import { ProductItem } from './Product'
 
 @Entity()
 export class User {
-  @PrimaryGeneratedColumn()
+  @PrimaryColumn()
   id: string
 
   @Column()
@@ -12,7 +12,7 @@ export class User {
 
 @Entity()
 export class ProductEntity {
-  @PrimaryGeneratedColumn()
+  @PrimaryColumn()
   id: number
 
   @Column()
@@ -24,7 +24,7 @@ export class ProductEntity {
 
 @Entity()
 export class StockEntity {
-  @PrimaryGeneratedColumn()
+  @PrimaryColumn()
   id: number
 
   @Column()
@@ -45,7 +45,7 @@ export class RemainStockEntity {
 
 @Entity()
 export class OrderEntity {
-  @PrimaryGeneratedColumn()
+  @PrimaryColumn()
   id: string
 
   @Column()
@@ -63,7 +63,7 @@ export class OrderEntity {
 
 @Entity()
 export class PaymentEntity {
-  @PrimaryGeneratedColumn()
+  @PrimaryColumn()
   id: string
 
   @Column()
