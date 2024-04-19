@@ -100,7 +100,7 @@ export class TestRepository
   async enoughStock(id: number, amount: number): Promise<boolean> {
     const stock: StockEntity = this.stockTable.get(id)
     console.log(`${id}/ q : ${stock.quantity}, amount : ${amount}`)
-    return stock.quantity > amount
+    return stock.quantity >= amount
   }
 
   async updateByOrder(order: OrderEntity): Promise<void> {
