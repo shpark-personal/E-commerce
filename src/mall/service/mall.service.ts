@@ -114,6 +114,14 @@ export class MallService {
     this.stockRepository.updateByPay(orderId)
     this.orderRepository.createPayment(paymentForm)
     const order = await this.orderRepository.getOrder(orderId)
+
+    // FIXME
+    // 같은 아이디로 다른 인스턴스에서 접근하여 point를 사용하려고할 때
+    // 현재 user point 100
+    // A : 주문 70 -> OK
+    // B : 주문 50 -> OK   ---- 여기에서 주문 가능하다고 했지만
+    // A : 사용 70 -> OK
+    // B : 사용 50 -> FAIL ---- 여기에서 실패할 수 있다 -> USER의 혼돈...
     await this.userRepository.use(userId, order.payment)
     // fixme : rankedproduct 전송
     return { errorcode: Errorcode.Success }
