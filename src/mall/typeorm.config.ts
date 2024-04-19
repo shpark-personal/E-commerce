@@ -4,6 +4,7 @@ import {
   OrderEntity,
   PaymentEntity,
   ProductEntity,
+  ProductItemEntity,
   RemainStockEntity,
   SalesEntity,
   StockEntity,
@@ -27,8 +28,9 @@ export class TypeormConfig implements TypeOrmOptionsFactory {
         OrderEntity,
         PaymentEntity,
         SalesEntity,
+        ProductItemEntity,
       ],
-      database: 'enrollment',
+      database: 'mall',
       synchronize: true,
       logging: true,
     } as TypeOrmModuleOptions

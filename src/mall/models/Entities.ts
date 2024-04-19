@@ -1,5 +1,11 @@
-import { Column, Entity, PrimaryColumn } from 'typeorm'
-import { ProductItem } from './Product'
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  PrimaryColumn,
+} from 'typeorm'
 
 @Entity()
 export class User {
@@ -51,8 +57,8 @@ export class OrderEntity {
   @Column()
   userId: string
 
-  @Column()
-  products: ProductItem[]
+  @OneToMany(() => ProductItemEntity, productItem => productItem.order)
+  products: ProductItemEntity[]
 
   @Column()
   payment: number
@@ -86,4 +92,17 @@ export class SalesEntity {
 
   @Column()
   quantity: number
+}
+
+@Entity()
+export class ProductItemEntity {
+  @PrimaryColumn()
+  id: number
+
+  @Column()
+  quantity: number
+
+  @ManyToOne(() => OrderEntity, order => order.products)
+  @JoinColumn({ name: 'orderId' })
+  order: OrderEntity
 }

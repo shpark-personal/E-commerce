@@ -1,6 +1,9 @@
 import { Repository } from 'typeorm'
-import { OrderEntity, PaymentEntity } from '../models/Entities'
-import { ProductItem } from '../models/Product'
+import {
+  OrderEntity,
+  PaymentEntity,
+  ProductItemEntity,
+} from '../models/Entities'
 import { OrderRepository } from './order.repository'
 
 describe('orderRepositoryTest', () => {
@@ -22,7 +25,7 @@ describe('orderRepositoryTest', () => {
     const order: OrderEntity = {
       id: 'o1',
       userId: 'userA',
-      products: [{ id: 1, quantity: 3 } as ProductItem],
+      products: [{ id: 1, quantity: 3 } as ProductItemEntity],
       payment: 30,
       createTime: new Date(),
     }
@@ -55,7 +58,7 @@ describe('orderRepositoryTest', () => {
     const order: OrderEntity = {
       id: 'o1',
       userId: 'userA',
-      products: [{ id: 1, quantity: 3 } as ProductItem],
+      products: [{ id: 1, quantity: 3 } as ProductItemEntity],
       payment: 30,
       createTime: new Date(),
     }
