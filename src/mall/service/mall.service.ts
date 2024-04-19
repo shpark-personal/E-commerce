@@ -127,7 +127,12 @@ export class MallService {
     return { errorcode: Errorcode.Success }
   }
 
-  getRankedProducts(): ProductsResult {
+  async getRankedProducts(
+    time: Date,
+    period: number,
+    top: number,
+  ): Promise<ProductsResult> {
+    await this.productRepository.getSales(time, period, top)
     return { errorcode: Errorcode.Success, products: [] }
   }
 }

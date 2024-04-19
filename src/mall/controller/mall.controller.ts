@@ -63,7 +63,7 @@ export class MallController {
 
   // 상위 상품 조회
   @Get('product/ranked')
-  searchRankedProducts(): ProductsResult {
-    return this.mallService.getRankedProducts()
+  async searchRankedProducts(): Promise<ProductsResult> {
+    return await this.mallService.getRankedProducts(new Date(), 3, 5)
   }
 }
