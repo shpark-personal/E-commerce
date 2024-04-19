@@ -51,6 +51,7 @@ export class UserRepository implements IUserRepository {
     try {
       const user = await this.users.findOne({ where: { id: id } })
       const remainPoint = user.point - point
+      if (remainPoint < 0) return { errorcode: Errorcode.LackOfPoint }
       const result = await this.users.update(id, { id: id, point: remainPoint })
       return result.affected === 0
         ? { errorcode: Errorcode.Success, point: remainPoint }
