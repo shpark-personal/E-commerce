@@ -1,4 +1,5 @@
 import { OrderEntity, PaymentEntity } from '../models/Entities'
+import { Product, ProductItem } from '../models/Product'
 import { PointResult, ProductResult, StockResult } from '../models/Result'
 
 export const IUSER_REPOSITORY = 'User Repository'
@@ -11,6 +12,8 @@ export interface IUserRepository {
 export const IPRODUCT_REPOSITORY = 'Product Repository'
 export interface IProductRepository {
   getProduct(id: number): Promise<ProductResult>
+  updateSales(time: Date, products: ProductItem[]): Promise<void>
+  getSales(time: Date, period: number, top: number): Promise<Product[]>
 }
 
 export const ISTOCK_REPOSITORY = 'Stock Repository'

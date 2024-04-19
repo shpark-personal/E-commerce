@@ -6,6 +6,7 @@ import {
   PaymentEntity,
   ProductEntity,
   RemainStockEntity,
+  SalesEntity,
   StockEntity,
   User,
 } from '../models/Entities'
@@ -16,6 +17,7 @@ import {
   IUserRepository,
 } from './mall.interface'
 import { ValidIdChecker, ValidPointChecker } from '../etc/helper'
+import { Product, ProductItem } from '../models/Product'
 
 @Injectable()
 export class TestRepository
@@ -28,10 +30,12 @@ export class TestRepository
   constructor() {
     this.insertSeedProducts()
     this.insertSeedUsers()
+    this.insertSeedSales()
   }
 
   private readonly userTable: Map<string, User> = new Map()
   private readonly productTable: Map<number, ProductEntity> = new Map()
+  private readonly salesTable: SalesEntity[] = []
   private readonly stockTable: Map<number, StockEntity> = new Map()
   private readonly remainStockTable: RemainStockEntity[] = []
   private readonly orderTable: Map<string, OrderEntity> = new Map()
@@ -88,6 +92,58 @@ export class TestRepository
       errorcode: Errorcode.Success,
       product: { id: product.id, name: product.name, price: product.price },
     }
+  }
+
+  async updateSales(date: Date, products: ProductItem[]): Promise<void> {
+    const day = date.toISOString().split('T')[0]
+    const curSales = this.salesTable.filter(s => s.date == day)
+    products.forEach(p => {
+      const prev = curSales.find(v => v.id == p.id)
+      if (prev) {
+        console.log(`*** prev: ${prev.quantity}`)
+        prev.quantity += p.quantity
+        console.log(`*** updated: ${prev.quantity}`)
+      } else {
+        this.salesTable.push({ date: day, id: p.id, quantity: p.quantity })
+      }
+    })
+  }
+
+  async getSales(date: Date, period: number, top: number): Promise<Product[]> {
+    const dates = []
+    for (let i = 0; i < period; i++) {
+      const currentDate = new Date(date)
+      currentDate.setDate(date.getDate() - i)
+      const formattedDate = currentDate.toISOString().split('T')[0]
+      dates.push(formattedDate)
+    }
+
+    const filtered = this.salesTable.filter(s => dates.includes(s.date))
+    const quantityById = new Map<number, number>()
+    filtered.forEach(sale => {
+      const id = sale.id
+      const quantity = sale.quantity
+      if (quantityById.has(id)) {
+        quantityById.set(id, quantityById.get(id)! + quantity)
+      } else {
+        quantityById.set(id, quantity)
+      }
+    })
+
+    const sortedByQuantityDesc = Array.from(quantityById.entries()).sort(
+      (a, b) => b[1] - a[1],
+    )
+
+    const topResults = sortedByQuantityDesc.slice(0, top)
+    return await topResults.map(([id]) => {
+      const productEntity: ProductEntity = this.productTable.get(id)
+      const product: Product = {
+        id: productEntity.id,
+        name: productEntity.name,
+        price: productEntity.price,
+      }
+      return product
+    })
   }
 
   // STOCK REPOSITORY
@@ -167,5 +223,24 @@ export class TestRepository
 
   private insertSeedUsers(): void {
     this.userTable.set('userA', { id: 'userA', point: 10000 })
+  }
+
+  private insertSeedSales(): void {
+    // seed로 미리 10일간 저장
+    const today = new Date()
+    const dates = []
+    for (let i = 0; i < 10; i++) {
+      const currentDate = new Date(today)
+      currentDate.setDate(today.getDate() - i)
+      const formattedDate = currentDate.toISOString().split('T')[0]
+      dates.push(formattedDate)
+    }
+
+    // 10일동안의 임의 데이터 생성
+    dates.forEach(d => {
+      for (let i = 1; i < 6; i++) {
+        this.salesTable.push({ date: d, id: i, quantity: i })
+      }
+    })
   }
 }

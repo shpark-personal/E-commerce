@@ -75,3 +75,15 @@ export class PaymentEntity {
   @Column()
   createTime: Date
 }
+
+@Entity()
+export class SalesEntity {
+  @PrimaryColumn()
+  date: string
+
+  @PrimaryColumn()
+  id: number
+
+  @Column()
+  quantity: number
+}
