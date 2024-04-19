@@ -9,6 +9,7 @@ import {
 import { TestRepository } from '../repository/test.repository'
 import { Errorcode } from '../models/Enums'
 import { todo } from 'node:test'
+import { Product } from '../models/Product'
 
 describe('MallService', () => {
   let service: MallService
@@ -122,6 +123,25 @@ describe('MallService', () => {
       ]
       const result = await service.order('userA', li)
       expect(result.errorcode).toEqual(Errorcode.LackOfPoint)
+    })
+  })
+
+  describe('get rank', () => {
+    it('success', async () => {
+      const period = 3
+      const top = 3
+      const li: Product[] = [
+        { id: 5, name: 'product_5', price: 1000 },
+        { id: 4, name: 'product_4', price: 1000 },
+        { id: 3, name: 'product_3', price: 1000 },
+        { id: 2, name: 'product_2', price: 1000 },
+        { id: 1, name: 'product_1', price: 1000 },
+      ]
+      const result = await service.getRankedProducts(new Date(), period, top)
+      expect(result).toEqual({
+        errorcode: Errorcode.Success,
+        products: li.slice(0, top),
+      })
     })
   })
 })
