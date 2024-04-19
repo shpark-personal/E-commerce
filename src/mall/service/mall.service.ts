@@ -133,7 +133,6 @@ export class MallService {
     top: number,
   ): Promise<ProductsResult> {
     return {
-      errorcode: Errorcode.Success,
       products: await this.productRepository.getSales(time, period, top),
     }
   }

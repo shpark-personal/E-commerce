@@ -139,7 +139,6 @@ describe('MallService', () => {
       ]
       const result = await service.getRankedProducts(new Date(), period, top)
       expect(result).toEqual({
-        errorcode: Errorcode.Success,
         products: li.slice(0, top),
       })
     })

@@ -27,6 +27,5 @@ export class ProductDetailResult {
 }
 
 export class ProductsResult {
-  errorcode: Errorcode
   products: Product[]
 }
