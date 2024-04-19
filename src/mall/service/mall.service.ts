@@ -64,12 +64,11 @@ export class MallService {
       return Promise.resolve({ errorcode: Errorcode.InvalidRequest })
     let lack = false
     let total = 0
-    products.map(async item => {
+    await products.map(async item => {
       const result = await this.stockRepository.enoughStock(
         item.id,
         item.amount,
       )
-      console.log(result)
       if (!result) {
         lack = true
         return
