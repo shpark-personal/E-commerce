@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Inject, Injectable } from '@nestjs/common'
 import {
   PointResult,
@@ -18,7 +17,7 @@ import {
   IUSER_REPOSITORY,
   IUserRepository,
 } from '../repository/mall.interface'
-import { ValidIdChecker } from '../etc/helper'
+import { ToDto, ToEntity, ValidIdChecker } from '../etc/helper'
 import { OrderEntity, PaymentEntity } from '../models/Entities'
 
 @Injectable()
@@ -64,6 +63,7 @@ export class MallService {
       return Promise.resolve({ errorcode: Errorcode.InvalidRequest })
     let lack = false
     let total = 0
+    const productEntity = []
     await products.map(async item => {
       const result = await this.stockRepository.enoughStock(
         item.id,
@@ -78,6 +78,7 @@ export class MallService {
         console.log(
           `p : ${o.product.price}, amt : ${item.quantity}, t : ${total}`,
         )
+        productEntity.push(ToEntity(item))
       })
     })
     if (lack) return Promise.resolve({ errorcode: Errorcode.OutOfStock })
@@ -92,7 +93,7 @@ export class MallService {
     const orderForm: OrderEntity = {
       id: `${date}`,
       userId: userId,
-      products: products,
+      products: productEntity,
       payment: total,
       createTime: date,
     }
@@ -123,7 +124,10 @@ export class MallService {
     // A : 사용 70 -> OK
     // B : 사용 50 -> FAIL ---- 여기에서 실패할 수 있다 -> USER의 혼돈...
     await this.userRepository.use(userId, order.payment)
-    await this.productRepository.updateSales(new Date(), order.products)
+    await this.productRepository.updateSales(
+      new Date(),
+      order.products.map(p => ToDto(p)),
+    )
     return { errorcode: Errorcode.Success }
   }
 
