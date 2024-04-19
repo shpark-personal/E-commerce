@@ -1,6 +1,14 @@
 import { TypeOrmModuleOptions, TypeOrmOptionsFactory } from '@nestjs/typeorm'
 import { Injectable } from '@nestjs/common'
-import { User } from './models/Entities'
+import {
+  OrderEntity,
+  PaymentEntity,
+  ProductEntity,
+  RemainStockEntity,
+  SalesEntity,
+  StockEntity,
+  User,
+} from './models/Entities'
 
 @Injectable()
 export class TypeormConfig implements TypeOrmOptionsFactory {
@@ -11,7 +19,15 @@ export class TypeormConfig implements TypeOrmOptionsFactory {
       port: 5433,
       password: 'admin',
       username: 'postgres',
-      entities: [User],
+      entities: [
+        User,
+        ProductEntity,
+        StockEntity,
+        RemainStockEntity,
+        OrderEntity,
+        PaymentEntity,
+        SalesEntity,
+      ],
       database: 'enrollment',
       synchronize: true,
       logging: true,
