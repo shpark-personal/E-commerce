@@ -123,7 +123,7 @@ export class MallService {
     // A : 사용 70 -> OK
     // B : 사용 50 -> FAIL ---- 여기에서 실패할 수 있다 -> USER의 혼돈...
     await this.userRepository.use(userId, order.payment)
-    // fixme : rankedproduct 전송
+    await this.productRepository.updateSales(new Date(), order.products)
     return { errorcode: Errorcode.Success }
   }
 
