@@ -109,13 +109,13 @@ export class TestRepository
       const item = products[i]
       this.stockTable.set(item.id, {
         id: item.id,
-        quantity: this.stockTable.get(item.id).quantity - item.amount,
+        quantity: this.stockTable.get(item.id).quantity - item.quantity,
       })
 
       const rs: RemainStockEntity = {
         orderId: order.id,
         productId: item.id,
-        quantity: item.amount,
+        quantity: item.quantity,
       }
       this.remainStockTable.push(rs)
     }

@@ -7,5 +7,5 @@ export class Product {
 
 export class ProductItem {
   id: number
-  amount: number
+  quantity: number
 }

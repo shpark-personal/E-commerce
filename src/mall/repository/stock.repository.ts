@@ -48,11 +48,11 @@ export class StockRepository implements IStockRepository {
     const products = order.products
     for (let i = 0; i < products.length; i++) {
       const item = products[i]
-      this.decreaseStock(item.id, item.amount)
+      this.decreaseStock(item.id, item.quantity)
       const rs: RemainStockEntity = {
         orderId: order.id,
         productId: item.id,
-        quantity: item.amount,
+        quantity: item.quantity,
       }
       await this.addRemainStock(rs)
     }

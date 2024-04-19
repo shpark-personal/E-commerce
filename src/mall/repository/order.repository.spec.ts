@@ -22,7 +22,7 @@ describe('orderRepositoryTest', () => {
     const order: OrderEntity = {
       id: 'o1',
       userId: 'userA',
-      products: [{ id: 1, amount: 3 } as ProductItem],
+      products: [{ id: 1, quantity: 3 } as ProductItem],
       payment: 30,
       createTime: new Date(),
     }
@@ -55,7 +55,7 @@ describe('orderRepositoryTest', () => {
     const order: OrderEntity = {
       id: 'o1',
       userId: 'userA',
-      products: [{ id: 1, amount: 3 } as ProductItem],
+      products: [{ id: 1, quantity: 3 } as ProductItem],
       payment: 30,
       createTime: new Date(),
     }

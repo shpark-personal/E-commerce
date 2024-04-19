@@ -67,16 +67,16 @@ export class MallService {
     await products.map(async item => {
       const result = await this.stockRepository.enoughStock(
         item.id,
-        item.amount,
+        item.quantity,
       )
       if (!result) {
         lack = true
         return
       }
       return this.productRepository.getProduct(item.id).then(o => {
-        total += o.product.price * item.amount
+        total += o.product.price * item.quantity
         console.log(
-          `p : ${o.product.price}, amt : ${item.amount}, t : ${total}`,
+          `p : ${o.product.price}, amt : ${item.quantity}, t : ${total}`,
         )
       })
     })

@@ -102,23 +102,23 @@ describe('MallService', () => {
   describe('order', () => {
     it('success', async () => {
       const li = [
-        { id: 1, amount: 3 },
-        { id: 2, amount: 4 },
+        { id: 1, quantity: 3 },
+        { id: 2, quantity: 4 },
       ]
       const result = await service.order('userA', li)
       expect(result.errorcode).toEqual(Errorcode.Success)
     })
 
     it('fail : out of stock', async () => {
-      const li = [{ id: 1, amount: 100 }]
+      const li = [{ id: 1, quantity: 100 }]
       const result = await service.order('userA', li)
       expect(result.errorcode).toEqual(Errorcode.OutOfStock)
     })
 
     it('fail : lack of point', async () => {
       const li = [
-        { id: 1, amount: 9 },
-        { id: 2, amount: 4 },
+        { id: 1, quantity: 9 },
+        { id: 2, quantity: 4 },
       ]
       const result = await service.order('userA', li)
       expect(result.errorcode).toEqual(Errorcode.LackOfPoint)
