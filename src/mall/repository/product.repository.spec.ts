@@ -1,11 +1,22 @@
+import { Repository } from 'typeorm'
+import { ProductEntity, SalesEntity } from '../models/Entities'
 import { Errorcode } from '../models/Enums'
 import { ProductRepository } from './product.repository'
 
 describe('productRepositoryTest', () => {
-  const repository = new ProductRepository({
+  const productsRepository = {
     findOne: jest.fn(),
-  } as unknown as ConstructorParameters<typeof ProductRepository>[0])
+  }
 
+  const salesRepository = {
+    find: jest.fn(),
+    save: jest.fn(),
+  }
+
+  const repository = new ProductRepository(
+    productsRepository as unknown as Repository<ProductEntity>,
+    salesRepository as unknown as Repository<SalesEntity>,
+  )
   it('getProduct', async () => {
     const product = {
       id: 1,
