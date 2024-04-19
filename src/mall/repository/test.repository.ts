@@ -30,6 +30,7 @@ export class TestRepository
   constructor() {
     this.insertSeedProducts()
     this.insertSeedUsers()
+    this.insertSeedSales()
   }
 
   private readonly userTable: Map<string, User> = new Map()
@@ -135,8 +136,13 @@ export class TestRepository
 
     const topResults = sortedByQuantityDesc.slice(0, top)
     return await topResults.map(([id]) => {
-      const product: ProductEntity = this.productTable.get(id)
-      return { id: product.id, name: product.name, price: product.price }
+      const productEntity: ProductEntity = this.productTable.get(id)
+      const product: Product = {
+        id: productEntity.id,
+        name: productEntity.name,
+        price: productEntity.price,
+      }
+      return product
     })
   }
 
@@ -217,5 +223,24 @@ export class TestRepository
 
   private insertSeedUsers(): void {
     this.userTable.set('userA', { id: 'userA', point: 10000 })
+  }
+
+  private insertSeedSales(): void {
+    // seed로 미리 10일간 저장
+    const today = new Date()
+    const dates = []
+    for (let i = 0; i < 10; i++) {
+      const currentDate = new Date(today)
+      currentDate.setDate(today.getDate() - i)
+      const formattedDate = currentDate.toISOString().split('T')[0]
+      dates.push(formattedDate)
+    }
+
+    // 10일동안의 임의 데이터 생성
+    dates.forEach(d => {
+      for (let i = 1; i < 6; i++) {
+        this.salesTable.push({ date: d, id: i, quantity: i })
+      }
+    })
   }
 }
