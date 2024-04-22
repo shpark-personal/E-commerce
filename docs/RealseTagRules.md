@@ -1,4 +1,4 @@
-각 서버에서 Release를 할 때 tag 생성에서 다음의 규칙을 따릅니다.
+각 서버에서 Release를 할 때 tag 생성 시 다음의 규칙을 따릅니다.
 - 1.0.0+dev : devel에서 test서버로 pr 생성 시 tag 생성
 - 1.0.0+test : dev->test pr에 대한 test완료 후 stage로 pr 생성 시 tag 생성
 - 1.0.0+stage : test->stage pr에 대한 test완료 후 main으로 pr 생성 시 tag 생성
@@ -20,13 +20,6 @@ Patch Version
 - 이전 버전과 호환되는 방식으로 버그 등 수정
 ```
 
-Release Notes
+[Release Notes](https://github.com/shpark-personal/E-commerce/blob/main/docs/ReleaseNotes.md)
 
-// link 추가
-
-```
-[base]
-- tag : v0.0.0
-- 변경 사항
-```
 
