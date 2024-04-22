@@ -10,6 +10,10 @@
 
 ### CI/CD
 - [서버 관리](https://github.com/shpark-personal/E-commerce/blob/main/docs/workflow.md)
+- [Tagging rules](https://github.com/shpark-personal/E-commerce/blob/main/docs/tagging%20rules.md)
+
+### Release Notes
+[Release Notes](https://github.com/shpark-personal/E-commerce/blob/main/docs/ReleaseNotes.md)
 
 ### STACKS
 - **Framework**: Nest.js
