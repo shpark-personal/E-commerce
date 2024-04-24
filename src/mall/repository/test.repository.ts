@@ -19,8 +19,6 @@ import {
 import { ValidIdChecker, ValidPointChecker } from '../etc/helper'
 import { Product, ProductItem } from '../models/Product'
 
-// test
-
 @Injectable()
 export class TestRepository
   implements
