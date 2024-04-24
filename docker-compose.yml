@@ -49,6 +49,8 @@ services:
     volumes:
       - ./data/pgadmin/:/var/lib/pgadmin
   ecommerce:
+    container_name: server
+    image: server
     build:
       context: .
       dockerfile: Dockerfile
