@@ -1,7 +1,6 @@
 각 서버에서 Release를 할 때 tag 생성 시 다음의 규칙을 따릅니다.
 - 1.0.0+dev : devel에서 test서버로 pr 생성 시 tag 생성
-- 1.0.0+test : dev->test pr에 대한 test완료 후 stage로 pr 생성 시 tag 생성
-- 1.0.0+stage : test->stage pr에 대한 test완료 후 main으로 pr 생성 시 tag 생성
+- 1.0.0+test : dev->test pr에 대한 test완료 후 prod로 pr 생성 시 tag 생성
 - 1.0.0 : 최종 release tag 생성
 
 
