@@ -33,15 +33,16 @@ jobs:
         continue-on-error: false
 
       - name: Test
-        run: npm run test
-        continue-on-error: false
+        env:
+          CI: true
+        run: npm run test:cov
 
       - name: Set up Docker Compose
         uses: docker/compose-cli@v2
         # fixme : version
 
       # fixme : update tag
-      
+
       - name: Build Docker images
         env:
           POSTGRES_USER: ${{ secrets.POSTGRES_USER }}

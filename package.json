@@ -71,6 +71,18 @@
     "collectCoverageFrom": [
       "**/*.(t|j)s"
     ],
+    "coverageThreshold": {
+      "./src/": {
+        "statements": 50,
+        "branches": 50,
+        "functions": 50,
+        "lines": 50
+      }
+    },
+    "coverageReporters": [
+      "lcov",
+      "text"
+    ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
   }
