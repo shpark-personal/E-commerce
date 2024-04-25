@@ -50,7 +50,7 @@ services:
       - ./data/pgadmin/:/var/lib/pgadmin
   ecommerce:
     container_name: server
-    image: server
+    image: ${REPOSITORY}:test0.0.1
     build:
       context: .
       dockerfile: Dockerfile
