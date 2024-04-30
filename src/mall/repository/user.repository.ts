@@ -15,49 +15,67 @@ export class UserRepository implements IUserRepository {
   ) {}
 
   async charge(id: string, point: number): Promise<PointResult> {
-    if (!ValidIdChecker(id)) return { errorcode: Errorcode.InvalidRequest }
     if (!ValidPointChecker(point)) return { errorcode: Errorcode.InvalidAmount }
-    await this.users.save({ id: id, point: point })
-    return this.users
-      .findOne({
-        where: { id: id },
-      })
-      .then(o => {
-        return { errorcode: Errorcode.Success, point: o.point }
-      })
-      .catch(e => {
-        console.log(e)
-        return { errorcode: Errorcode.InvalidRequest }
-      })
+
+    const user = await this.find(id)
+    if (!user) {
+      const newUser = this.users.create({ id: id, point: point })
+      await this.users.save(newUser)
+    } else {
+      user.point += point
+      await this.save(user)
+    }
+
+    const updatedUser = await this.find(id)
+    if (!updatedUser) return { errorcode: Errorcode.InvalidRequest }
+    return { errorcode: Errorcode.Success, point: updatedUser.point }
   }
 
   async get(id: string): Promise<PointResult> {
-    if (!ValidIdChecker(id)) return { errorcode: Errorcode.InvalidRequest }
-    return this.users
-      .findOne({
-        where: { id: id },
-      })
-      .then(o => {
-        return { errorcode: Errorcode.Success, point: o.point }
-      })
-      .catch(e => {
-        console.log(e)
-        return { errorcode: Errorcode.InvalidRequest }
-      })
+    const user = await this.find(id)
+    return user
+      ? { errorcode: Errorcode.Success, point: user.point }
+      : { errorcode: Errorcode.InvalidRequest }
   }
 
   async use(id: string, point: number): Promise<PointResult> {
-    if (!ValidIdChecker(id)) return { errorcode: Errorcode.InvalidRequest }
     try {
-      const user = await this.users.findOne({ where: { id: id } })
+      const user = await this.find(id)
+      if (!user) return { errorcode: Errorcode.InvalidRequest }
+
       const remainPoint = user.point - point
       if (remainPoint < 0) return { errorcode: Errorcode.LackOfPoint }
-      const result = await this.users.update(id, { id: id, point: remainPoint })
-      return result.affected === 0
+
+      user.point = remainPoint
+      const result = await this.save(user)
+
+      return result
         ? { errorcode: Errorcode.Success, point: remainPoint }
         : { errorcode: Errorcode.InvalidRequest }
     } catch {
       return { errorcode: Errorcode.InvalidRequest }
     }
+  }
+
+  private async save(user: User): Promise<boolean> {
+    try {
+      await this.users.manager.transaction(async em => {
+        await em.save<User>(
+          Object.assign(user, {
+            where: { id: user.id },
+            lock: { mode: 'pessimistic_write' },
+          }),
+        )
+      })
+      return true
+    } catch {
+      return false
+    }
+  }
+
+  private async find(id: string): Promise<User> {
+    return !ValidIdChecker(id)
+      ? null
+      : this.users.findOne({ where: { id: id } })
   }
 }
