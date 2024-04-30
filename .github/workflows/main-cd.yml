@@ -1,12 +1,9 @@
-name: devel workflow
+name: main workflow
 
 on:
   push:
     branches:
-      - devel
-  pull_request:
-    branches:
-      - devel
+      - main
 
 jobs:
   build:
@@ -41,13 +38,7 @@ jobs:
         uses: docker/compose-cli@v2
         # fixme : version
 
-      - name: Get latest tag
-        id: latest_tag
-        run: echo "::set-output name=tag::$(git describe --tags --abbrev=0)"
-
-      - name: Append +dev to tag
-        id: updated_tag
-        run: echo "::set-output name=updated_tag::${{ steps.latest_tag.outputs.tag }}+dev"
+      # fixme : update tag
 
       - name: Build Docker images
         env:
@@ -79,7 +70,7 @@ jobs:
         run: docker-compose up -d
 
       - name: Notify Slack on Success
-        if: success() # 이 step은 job이 성공한 경우에만 실행된다.
+        if: success()
         id: slack-success
         uses: slackapi/slack-github-action@v1.24.0
         with:
@@ -108,10 +99,10 @@ jobs:
               ]
             }
         env:
-          SLACK_WEBHOOK_URL: '${{ secrets.SLACK_WEBHOOK }}'
+          SLACK_WEBHOOK_URL: "${{ secrets.SLACK_WEBHOOK }}"
           SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOKS
 
-      - name: Notify Slack on Success
+      - name: Notify Slack on Failure
         if: failure()
         id: slack-fail
         uses: slackapi/slack-github-action@v1.24.0
@@ -141,5 +132,5 @@ jobs:
               ]
             }
         env:
-          SLACK_WEBHOOK_URL: '${{ secrets.SLACK_WEBHOOK }}'
+          SLACK_WEBHOOK_URL: "${{ secrets.SLACK_WEBHOOK }}"
           SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOKS

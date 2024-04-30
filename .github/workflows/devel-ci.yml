@@ -1,0 +1,71 @@
+name: devel workflow
+
+on:
+  push:
+    branches:
+      - devel
+  pull_request:
+    branches:
+      - devel
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '18.18.0'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Lint
+        run: npm run lint
+        continue-on-error: false
+
+      - name: Build
+        run: npm run build
+        continue-on-error: false
+
+      - name: Test
+        env:
+          CI: true
+        run: npm run test:cov
+
+      - name: Notify Slack on Failure
+        if: failure()
+        id: slack-fail
+        uses: slackapi/slack-github-action@v1.24.0
+        with:
+          payload: |
+            {
+              "channel": "${{ secrets.SLACK_CHANNELID }}",
+              "attachments": [
+                {
+                  "color": "#ff0000",
+                  "title": "${{ github.repository }}",
+                  "title_link": "https://github.com/${{github.repository}}",
+                  "text": "GitHub Action 실패",
+                  "fields": [
+                    {
+                      "title": "Repository",
+                      "value": "${{ github.repository }}",
+                      "short": true
+                    },
+                    {
+                      "title": "Tag",
+                      "value": "${{ github.ref_name }}",
+                      "short": true
+                    }
+                  ]      
+                }
+              ]
+            }
+        env:
+          SLACK_WEBHOOK_URL: '${{ secrets.SLACK_WEBHOOK }}'
+          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOKS
