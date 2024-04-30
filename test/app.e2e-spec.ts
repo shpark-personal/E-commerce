@@ -1,12 +1,10 @@
-import { Test, TestingModule } from '@nestjs/testing'
-import { INestApplication } from '@nestjs/common'
 import * as request from 'supertest'
 import { AppModule } from './../src/app.module'
+import { Test, TestingModule } from '@nestjs/testing'
 
 describe('AppController (e2e)', () => {
-  let app: INestApplication
-
-  beforeEach(async () => {
+  let app
+  beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
     }).compile()
@@ -15,12 +13,21 @@ describe('AppController (e2e)', () => {
     await app.init()
   })
 
-  describe('/mall/user/:id/charge', () => {
-    it('GET 200', () => {
-      return request(app.getHttpServer())
-        .get('/mall/user/userA/point')
-        .expect(200)
-      // EXPECT VALUE
-    })
+  it('should concurrently send requests', async () => {
+    const requests = []
+    for (let i = 0; i < 10; i++) {
+      requests.push(
+        request(app.getHttpServer())
+          .patch('/mall/user/:id/charge')
+          .send({ id: '1', amount: 10 - i })
+          .expect(200),
+      )
+    }
+
+    await Promise.all(requests)
+  })
+
+  afterAll(async () => {
+    await app.close()
   })
 })
