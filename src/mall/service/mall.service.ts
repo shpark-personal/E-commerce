@@ -64,6 +64,7 @@ export class MallService {
     let lack = false
     let total = 0
     const productEntity = []
+    // fixme : transacion 추가
     await products.map(async item => {
       const result = await this.stockRepository.enoughStock(
         item.id,
@@ -83,12 +84,6 @@ export class MallService {
     })
     if (lack) return Promise.resolve({ errorcode: Errorcode.OutOfStock })
 
-    const user = await this.userRepository.get(userId)
-    if (user.point < total) {
-      return Promise.resolve({ errorcode: Errorcode.LackOfPoint })
-    }
-
-    console.log(`point: ${user.point}, total: ${total}`)
     const date = new Date()
     const orderForm: OrderEntity = {
       id: `${date}`,
@@ -97,38 +92,38 @@ export class MallService {
       payment: total,
       createTime: date,
     }
-    await this.stockRepository.updateByOrder(orderForm)
-    await this.orderRepository.create(orderForm)
+    await this.stockRepository.shiftToRemainStock(orderForm)
+    await this.orderRepository.createOrder(orderForm)
     return Promise.resolve({ errorcode: Errorcode.Success })
   }
 
   async pay(userId: string, orderId: string): Promise<SimpleResult> {
     if (!ValidIdChecker(userId)) return { errorcode: Errorcode.InvalidRequest }
-    // fixme : 결제 실패 or 취소 or 토큰 만료
-    const date = new Date()
-    const paymentForm: PaymentEntity = {
-      id: `${date}`,
-      userId: userId,
-      orderId: orderId,
-      createTime: date,
-    }
-    this.stockRepository.updateByPay(orderId)
-    this.orderRepository.createPayment(paymentForm)
-    const order = await this.orderRepository.getOrder(orderId)
 
-    // FIXME
-    // 같은 아이디로 다른 인스턴스에서 접근하여 point를 사용하려고할 때
-    // 현재 user point 100
-    // A : 주문 70 -> OK
-    // B : 주문 50 -> OK   ---- 여기에서 주문 가능하다고 했지만
-    // A : 사용 70 -> OK
-    // B : 사용 50 -> FAIL ---- 여기에서 실패할 수 있다 -> USER의 혼돈...
-    await this.userRepository.use(userId, order.payment)
-    await this.productRepository.updateSales(
-      new Date(),
-      order.products.map(p => ToDto(p)),
-    )
-    return { errorcode: Errorcode.Success }
+    // 결제 시도
+    const order = await this.orderRepository.getOrder(orderId)
+    const result = await this.userRepository.use(userId, order.payment)
+    if (result.errorcode !== Errorcode.Success) {
+      await this.stockRepository.shiftToStock(order)
+      await this.orderRepository.deleteOrder(order)
+      return { errorcode: result.errorcode }
+    } else {
+      const date = new Date()
+      const paymentForm: PaymentEntity = {
+        id: `${date}`,
+        userId: userId,
+        orderId: orderId,
+        createTime: date,
+      }
+      this.stockRepository.reduceByPay(orderId)
+      this.orderRepository.createPayment(paymentForm)
+
+      await this.productRepository.updateSales(
+        new Date(),
+        order.products.map(p => ToDto(p)),
+      )
+      return { errorcode: Errorcode.Success }
+    }
   }
 
   async getRankedProducts(

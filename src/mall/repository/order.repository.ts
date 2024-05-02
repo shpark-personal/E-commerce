@@ -13,8 +13,12 @@ export class OrderRepository implements IOrderRepository {
     private readonly payments: Repository<PaymentEntity>,
   ) {}
 
-  async create(order: OrderEntity): Promise<void> {
+  async createOrder(order: OrderEntity): Promise<void> {
     await this.orders.save(order)
+  }
+
+  async deleteOrder(order: OrderEntity): Promise<void> {
+    await this.orders.remove(order)
   }
 
   async createPayment(payment: PaymentEntity): Promise<void> {

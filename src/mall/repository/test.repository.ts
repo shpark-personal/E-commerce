@@ -159,7 +159,7 @@ export class TestRepository
     return stock.quantity >= amount
   }
 
-  async updateByOrder(order: OrderEntity): Promise<void> {
+  async shiftToRemainStock(order: OrderEntity): Promise<void> {
     const products = order.products
     for (let i = 0; i < products.length; i++) {
       const item = products[i]
@@ -177,7 +177,28 @@ export class TestRepository
     }
   }
 
-  async updateByPay(orderId: string): Promise<void> {
+  async shiftToStock(order: OrderEntity): Promise<void> {
+    const products = order.products
+    for (let i = 0; i < products.length; i++) {
+      const item = products[i]
+      this.stockTable.set(item.id, {
+        id: item.id,
+        quantity: this.stockTable.get(item.id).quantity + item.quantity,
+      })
+
+      const rs: RemainStockEntity = {
+        orderId: order.id,
+        productId: item.id,
+        quantity: item.quantity,
+      }
+      const idx = this.remainStockTable.findIndex(i => i === rs)
+      if (idx !== -1) {
+        this.remainStockTable.splice(idx, 1)
+      }
+    }
+  }
+
+  async reduceByPay(orderId: string): Promise<void> {
     const remainStocks = this.remainStockTable.filter(r => r.orderId == orderId)
     if (remainStocks.length > 0) {
       // fixme : 성능 개선
@@ -190,8 +211,12 @@ export class TestRepository
   }
 
   // ORDER REPOSITORY
-  async create(order: OrderEntity): Promise<void> {
+  async createOrder(order: OrderEntity): Promise<void> {
     await this.orderTable.set(order.id, order)
+  }
+
+  async deleteOrder(order: OrderEntity): Promise<void> {
+    await this.orderTable.delete(order.id)
   }
 
   async createPayment(payment: PaymentEntity): Promise<void> {
