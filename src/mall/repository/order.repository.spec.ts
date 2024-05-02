@@ -33,7 +33,7 @@ describe('orderRepositoryTest', () => {
     it('success to create order form', async () => {
       jest.spyOn(repository['orders'], 'save').mockResolvedValue(order)
 
-      expect(repository.create(order))
+      expect(repository.createOrder(order))
       expect(repository['orders'].save).toHaveBeenCalledWith(order)
     })
   })
