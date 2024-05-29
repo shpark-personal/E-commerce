@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common'
 import { MallController } from '../controller/mall.controller'
-import { MallService } from '../service/mall.service'
+import { OrderService } from '../service/order.service'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import {
   OrderEntity,
@@ -21,6 +21,9 @@ import {
 import { ProductRepository } from '../repository/product.repository'
 import { StockRepository } from '../repository/stock.repository'
 import { OrderRepository } from '../repository/order.repository'
+import { UserService } from '../service/user.service'
+import { PayService } from '../service/pay.service'
+import { ProductService } from '../service/product.service'
 
 @Module({
   imports: [
@@ -40,7 +43,10 @@ import { OrderRepository } from '../repository/order.repository'
   ],
   controllers: [MallController],
   providers: [
-    MallService,
+    UserService,
+    OrderService,
+    PayService,
+    ProductService,
     {
       provide: IUSER_REPOSITORY,
       useClass: UserRepository,
