@@ -20,13 +20,15 @@ export const ISTOCK_REPOSITORY = 'Stock Repository'
 export interface IStockRepository {
   getStock(id: number): Promise<StockResult>
   enoughStock(id: number, amount: number): Promise<boolean>
-  updateByOrder(order: OrderEntity): Promise<void>
-  updateByPay(orderId: string): Promise<void>
+  shiftToRemainStock(order: OrderEntity): Promise<void>
+  shiftToStock(order: OrderEntity): Promise<void>
+  reduceByPay(orderId: string): Promise<void>
 }
 
 export const IORDER_REPOSITORY = 'Order Repository'
 export interface IOrderRepository {
-  create(order: OrderEntity): Promise<void>
+  createOrder(order: OrderEntity): Promise<void>
+  deleteOrder(order: OrderEntity): Promise<void>
   createPayment(payment: PaymentEntity): Promise<void>
   getOrder(orderId: string): Promise<OrderEntity>
 }

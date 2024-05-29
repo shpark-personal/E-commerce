@@ -44,7 +44,7 @@ export class StockRepository implements IStockRepository {
       })
   }
 
-  async updateByOrder(order: OrderEntity): Promise<void> {
+  async shiftToRemainStock(order: OrderEntity): Promise<void> {
     const products = order.products
     for (let i = 0; i < products.length; i++) {
       const item = products[i]
@@ -54,11 +54,25 @@ export class StockRepository implements IStockRepository {
         productId: item.id,
         quantity: item.quantity,
       }
-      await this.addRemainStock(rs)
+      await this.remainStocks.save(rs)
     }
   }
 
-  async updateByPay(orderId: string): Promise<void> {
+  async shiftToStock(order: OrderEntity): Promise<void> {
+    const products = order.products
+    for (let i = 0; i < products.length; i++) {
+      const item = products[i]
+      this.increaseStock(item.id, item.quantity)
+      const rs: RemainStockEntity = {
+        orderId: order.id,
+        productId: item.id,
+        quantity: item.quantity,
+      }
+      await this.remainStocks.remove(rs)
+    }
+  }
+
+  async reduceByPay(orderId: string): Promise<void> {
     await this.remainStocks
       .find({
         where: { orderId: orderId },
@@ -84,7 +98,14 @@ export class StockRepository implements IStockRepository {
     // fixme : error
   }
 
-  private async addRemainStock(rs: RemainStockEntity) {
-    await this.remainStocks.save(rs)
+  private increaseStock(id: number, amount: number) {
+    this.stocks
+      .findOne({
+        where: { id: id },
+      })
+      .then(o => {
+        o.quantity = o.quantity + amount
+      })
+    // fixme : error
   }
 }
