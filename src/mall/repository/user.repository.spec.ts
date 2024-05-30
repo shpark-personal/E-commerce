@@ -1,4 +1,3 @@
-import { UpdateResult } from 'typeorm/query-builder/result/UpdateResult'
 import { Errorcode } from '../models/Enums'
 import { UserRepository } from './user.repository'
 
@@ -39,8 +38,7 @@ describe('userRepositoryTest', () => {
     })
 
     it('fail to get', async () => {
-      jest.spyOn(repository['users'], 'findOne').mockRejectedValue(user)
-
+      jest.spyOn(repository['users'], 'findOne').mockResolvedValue(null)
       expect(await repository.get('userA')).toEqual({
         errorcode: Errorcode.InvalidRequest,
       })
@@ -58,14 +56,8 @@ describe('userRepositoryTest', () => {
     }
 
     it('success to use point', async () => {
-      const result: UpdateResult = {
-        affected: 0,
-        raw: undefined,
-        generatedMaps: [],
-      }
-
       jest.spyOn(repository['users'], 'findOne').mockResolvedValue(user)
-      jest.spyOn(repository['users'], 'update').mockResolvedValue(result)
+      jest.spyOn(repository['users'], 'save').mockResolvedValue(updated)
 
       expect(await repository.use('userA', 5)).toEqual({
         errorcode: Errorcode.Success,
@@ -74,17 +66,10 @@ describe('userRepositoryTest', () => {
     })
 
     it('fail to use point', async () => {
-      const result: UpdateResult = {
-        affected: 1,
-        raw: undefined,
-        generatedMaps: [],
-      }
-
       jest.spyOn(repository['users'], 'findOne').mockResolvedValue(user)
-      jest.spyOn(repository['users'], 'update').mockResolvedValue(result)
 
-      expect(await repository.use('userA', 5)).toEqual({
-        errorcode: Errorcode.InvalidRequest,
+      expect(await repository.use('userA', 10)).toEqual({
+        errorcode: Errorcode.LackOfPoint,
       })
     })
   })
