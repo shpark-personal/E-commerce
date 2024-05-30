@@ -8,7 +8,7 @@ export function ValidIdChecker(id: string): boolean {
 }
 
 export function ValidPointChecker(point: number): boolean {
-  if (point >= 0) return true
+  if (point > 0) return true
   console.log('올바르지 않은 point 값입니다.')
   return false
 }
