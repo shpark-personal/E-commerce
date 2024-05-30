@@ -1,72 +1,114 @@
-import { TestingModule, Test } from '@nestjs/testing'
 import { Errorcode } from '../models/Enums'
 import {
-  IPRODUCT_REPOSITORY,
-  ISTOCK_REPOSITORY,
+  IProductRepository,
+  IStockRepository,
 } from '../repository/mall.interface'
-import { TestRepository } from '../repository/test.repository'
 import { ProductService } from './product.service'
 import { Product } from '../models/Product'
+import {
+  ProductResult,
+  StockResult,
+  ProductDetailResult,
+  ProductsResult,
+} from '../models/Result'
+import { todo } from 'node:test'
 
 describe('ProductService', () => {
-  let service: ProductService
+  let productService: ProductService
+  let productRepositoryMock: IProductRepository
+  let stockRepositoryMock: IStockRepository
 
-  beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        ProductService,
-        {
-          provide: IPRODUCT_REPOSITORY,
-          useClass: TestRepository,
-        },
-        {
-          provide: ISTOCK_REPOSITORY,
-          useClass: TestRepository,
-        },
-      ],
-    }).compile()
-    service = module.get<ProductService>(ProductService)
+  beforeEach(() => {
+    productRepositoryMock = {
+      getProduct: jest.fn(),
+      updateSales: jest.fn(),
+      getSales: jest.fn(),
+    }
+    stockRepositoryMock = {
+      getStock: jest.fn(),
+      enoughStock: jest.fn(),
+      keepStock: jest.fn(),
+      restoreStock: jest.fn(),
+      depleteStock: jest.fn(),
+    }
+    productService = new ProductService(
+      productRepositoryMock,
+      stockRepositoryMock,
+    )
   })
 
-  it('should be defined', () => {
-    expect(service).toBeDefined()
-  })
-
-  describe('get product details', () => {
-    // FIXME : cannot insert???
-    // beforeEach(() => repo.insertSeedProducts())
-
-    it('success', async () => {
-      const result = await service.getDetail(1)
-      const p = { id: 1, name: 'product_1', price: 1000 }
-      expect(result).toEqual({
+  describe('getDetail', () => {
+    it('should get details', async () => {
+      const productId = 'productA'
+      const quantity = 50
+      const product: Product = {
+        id: 1,
+        name: productId,
+        price: 1000,
+      }
+      const productResult: ProductResult = {
         errorcode: Errorcode.Success,
-        product: p,
-        quantity: 10,
-      })
-    })
+        product: product,
+      }
+      const stockResult: StockResult = {
+        errorcode: Errorcode.Success,
+        quantity: quantity,
+      }
+      const detailResult: ProductDetailResult = {
+        errorcode: Errorcode.Success,
+        product: product,
+        quantity: quantity,
+      }
 
-    it('fail', async () => {
-      const result = await service.getDetail(6)
-      expect(result).toEqual({ errorcode: Errorcode.InvalidRequest })
+      jest
+        .spyOn(productRepositoryMock, 'getProduct')
+        .mockResolvedValue(productResult)
+      jest.spyOn(stockRepositoryMock, 'getStock').mockResolvedValue(stockResult)
+
+      const result = await productService.getDetail(product.id)
+
+      expect(result).toEqual(detailResult)
+      expect(productRepositoryMock.getProduct).toHaveBeenCalledWith(product.id)
+      expect(stockRepositoryMock.getStock).toHaveBeenCalledWith(product.id)
     })
   })
 
-  describe('get rank', () => {
-    it('success', async () => {
+  describe('getRankedProducts', () => {
+    it('shoud get ranked products', async () => {
+      const time = new Date()
       const period = 3
-      const top = 3
-      const li: Product[] = [
-        { id: 5, name: 'product_5', price: 1000 },
-        { id: 4, name: 'product_4', price: 1000 },
-        { id: 3, name: 'product_3', price: 1000 },
-        { id: 2, name: 'product_2', price: 1000 },
-        { id: 1, name: 'product_1', price: 1000 },
-      ]
-      const result = await service.getRankedProducts(new Date(), period, top)
-      expect(result).toEqual({
-        products: li.slice(0, top),
-      })
+      const top = 2
+      const product1: Product = {
+        id: 1,
+        name: 'product1',
+        price: 1000,
+      }
+      const product2: Product = {
+        id: 1,
+        name: 'product2',
+        price: 1000,
+      }
+
+      const productsResult: ProductsResult = {
+        products: [product1, product2],
+      }
+
+      jest
+        .spyOn(productRepositoryMock, 'getSales')
+        .mockResolvedValue([product1, product2])
+
+      const result = await productService.getRankedProducts(time, period, top)
+
+      expect(result).toEqual(productsResult)
+      expect(productRepositoryMock.getSales).toHaveBeenCalledWith(
+        time,
+        period,
+        top,
+      )
     })
+
+    todo('top 수가 부족할 때')
+    todo('period invalid')
+    todo('time invalid')
   })
 })
