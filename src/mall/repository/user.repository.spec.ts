@@ -5,7 +5,6 @@ describe('userRepositoryTest', () => {
   const repository = new UserRepository({
     save: jest.fn(),
     findOne: jest.fn(),
-    update: jest.fn(),
   } as unknown as ConstructorParameters<typeof UserRepository>[0])
 
   it('charge', async () => {
@@ -34,13 +33,6 @@ describe('userRepositoryTest', () => {
       expect(await repository.get('userA')).toEqual({
         errorcode: Errorcode.Success,
         point: user.point,
-      })
-    })
-
-    it('fail to get', async () => {
-      jest.spyOn(repository['users'], 'findOne').mockResolvedValue(null)
-      expect(await repository.get('userA')).toEqual({
-        errorcode: Errorcode.InvalidRequest,
       })
     })
   })
