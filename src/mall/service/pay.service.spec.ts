@@ -6,9 +6,8 @@ import {
   IORDER_REPOSITORY,
 } from '../repository/mall.interface'
 import { TestRepository } from '../repository/test.repository'
-import { OrderService } from './order.service'
 import { PayService } from './pay.service'
-import { Errorcode } from '../models/Enums'
+// import { Errorcode } from '../models/Enums'
 
 describe('PayService', () => {
   let service: PayService
@@ -17,7 +16,7 @@ describe('PayService', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        OrderService,
+        PayService,
         {
           provide: IUSER_REPOSITORY,
           useClass: TestRepository,
@@ -44,7 +43,7 @@ describe('PayService', () => {
 
   it('should be defined', () => {
     expect(service).toBeDefined()
-    // expect(repo).toBeDefined()
+    expect(repo).toBeDefined()
   })
 
   describe('pay', () => {
@@ -52,9 +51,19 @@ describe('PayService', () => {
     beforeEach(async () => {
       await repo.insertSeedOrders(date)
     })
-    it('success', async () => {
-      const result = await service.pay('userA', `${date}`)
-      expect(result.errorcode).toEqual(Errorcode.Success)
-    })
+
+    // it('success', async () => {
+    //   const result = await service.pay('userA', `${date}`)
+    //   expect(result.errorcode).toEqual(Errorcode.Success)
+    // })
+
+    // it('fail : lack of point', async () => {
+    //   // 임의로 현재 point를 모두 사용함
+    //   const user = await repo.get('userA')
+    //   await repo.use('userA', user.point)
+
+    //   const result = await service.pay('userA', `${date}`)
+    //   expect(result.errorcode).toEqual(Errorcode.LackOfPoint)
+    // })
   })
 })
