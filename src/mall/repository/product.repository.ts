@@ -17,21 +17,14 @@ export class ProductRepository implements IProductRepository {
   ) {}
 
   async getProduct(id: number): Promise<ProductResult> {
-    return this.products
-      .findOne({
-        where: { id: id },
-      })
-      .then(o => {
-        return { errorcode: Errorcode.Success, product: o }
-      })
-      .catch(e => {
-        console.log(e)
-        return { errorcode: Errorcode.InvalidRequest }
-      })
+    const product = await this.findOne(id)
+    // fixme : product가 없을 때 unknown으로 출력
+    if (!product) return { errorcode: Errorcode.InvalidRequest }
+    return { errorcode: Errorcode.Success, product: product }
   }
 
   async updateSales(date: Date, products: ProductItem[]): Promise<void> {
-    const day = date.toISOString().split('T')[0]
+    const day = this.ToString(date)
     const curSales = await this.sales.find({
       where: {
         date: day,
@@ -39,19 +32,17 @@ export class ProductRepository implements IProductRepository {
     })
 
     for (const p of products) {
-      const prev = curSales.find(v => v.id === p.id)
-      if (prev) {
-        prev.quantity += p.quantity
-        // fixme : check save is update
-        await this.sales.save(prev)
+      let productToUpdate = curSales.find(v => v.id === p.id)
+      if (productToUpdate) {
+        productToUpdate.quantity += p.quantity
       } else {
-        const newSale = this.sales.create({
+        productToUpdate = this.sales.create({
           date: day,
           id: p.id,
           quantity: p.quantity,
         })
-        await this.sales.save(newSale)
       }
+      await this.sales.save(productToUpdate)
     }
   }
 
@@ -60,8 +51,7 @@ export class ProductRepository implements IProductRepository {
     for (let i = 0; i < period; i++) {
       const currentDate = new Date(time)
       currentDate.setDate(time.getDate() - i)
-      const formattedDate = currentDate.toISOString().split('T')[0]
-      dates.push(formattedDate)
+      dates.push(this.ToString(currentDate))
     }
 
     const filtered = await this.sales.find({
@@ -88,9 +78,7 @@ export class ProductRepository implements IProductRepository {
     const topResults = sortedByQuantityDesc.slice(0, top)
     return await Promise.all(
       topResults.map(async ([id]) => {
-        const product = await this.products.findOne({
-          where: { id: id },
-        })
+        const product = await this.findOne(id)
         return {
           id: product.id,
           name: product.name,
@@ -98,5 +86,13 @@ export class ProductRepository implements IProductRepository {
         }
       }),
     )
+  }
+
+  private async findOne(id: number): Promise<Product> {
+    return await this.products.findOne({ where: { id: id } })
+  }
+
+  private ToString(date: Date): string {
+    return date.toISOString().split('T')[0]
   }
 }
