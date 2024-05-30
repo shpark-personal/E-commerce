@@ -5,7 +5,6 @@ import { User } from '../models/Entities'
 import { IUserRepository } from './mall.interface'
 import { PointResult } from '../models/Result'
 import { Errorcode } from '../models/Enums'
-import { ValidIdChecker, ValidPointChecker } from '../etc/helper'
 
 @Injectable()
 export class UserRepository implements IUserRepository {
@@ -15,45 +14,34 @@ export class UserRepository implements IUserRepository {
   ) {}
 
   async charge(id: string, point: number): Promise<PointResult> {
-    if (!ValidPointChecker(point)) return { errorcode: Errorcode.InvalidAmount }
-
-    const user = await this.find(id)
+    let user = await this.findOne(id)
     if (!user) {
-      const newUser = this.users.create({ id: id, point: point })
-      await this.users.save(newUser)
+      user = this.users.create({ id: id, point: point })
     } else {
       user.point += point
-      await this.save(user)
     }
+    await this.save(user)
 
-    const updatedUser = await this.find(id)
-    if (!updatedUser) return { errorcode: Errorcode.InvalidRequest }
+    const updatedUser = await this.findOne(id)
     return { errorcode: Errorcode.Success, point: updatedUser.point }
   }
 
   async get(id: string): Promise<PointResult> {
-    const user = await this.find(id)
-    return user
-      ? { errorcode: Errorcode.Success, point: user.point }
-      : { errorcode: Errorcode.InvalidRequest }
+    const user = await this.findOne(id)
+    return { errorcode: Errorcode.Success, point: user.point }
   }
 
   async use(id: string, point: number): Promise<PointResult> {
     try {
-      const user = await this.find(id)
-      if (!user) return { errorcode: Errorcode.InvalidRequest }
-
+      const user = await this.findOne(id)
       const remainPoint = user.point - point
       if (remainPoint < 0) return { errorcode: Errorcode.LackOfPoint }
 
       user.point = remainPoint
-      const result = await this.save(user)
-
-      return result
-        ? { errorcode: Errorcode.Success, point: remainPoint }
-        : { errorcode: Errorcode.InvalidRequest }
+      await this.save(user)
+      return { errorcode: Errorcode.Success, point: remainPoint }
     } catch {
-      return { errorcode: Errorcode.InvalidRequest }
+      return { errorcode: Errorcode.UnknownError }
     }
   }
 
@@ -74,9 +62,7 @@ export class UserRepository implements IUserRepository {
     }
   }
 
-  private async find(id: string): Promise<User> {
-    return !ValidIdChecker(id)
-      ? null
-      : this.users.findOne({ where: { id: id } })
+  private async findOne(id: string): Promise<User> {
+    return this.users.findOne({ where: { id: id } })
   }
 }
