@@ -159,7 +159,7 @@ export class TestRepository
     return stock.quantity >= amount
   }
 
-  async shiftToRemainStock(order: OrderEntity): Promise<void> {
+  async keepStock(order: OrderEntity): Promise<void> {
     const products = order.products
     for (let i = 0; i < products.length; i++) {
       const item = products[i]
@@ -177,7 +177,7 @@ export class TestRepository
     }
   }
 
-  async shiftToStock(order: OrderEntity): Promise<void> {
+  async restoreStock(order: OrderEntity): Promise<void> {
     const products = order.products
     for (let i = 0; i < products.length; i++) {
       const item = products[i]
@@ -198,7 +198,7 @@ export class TestRepository
     }
   }
 
-  async reduceByPay(orderId: string): Promise<void> {
+  async depleteStock(orderId: string): Promise<void> {
     const remainStocks = this.remainStockTable.filter(r => r.orderId == orderId)
     if (remainStocks.length > 0) {
       // fixme : 성능 개선

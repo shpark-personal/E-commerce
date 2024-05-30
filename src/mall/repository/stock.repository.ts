@@ -44,7 +44,7 @@ export class StockRepository implements IStockRepository {
       })
   }
 
-  async shiftToRemainStock(order: OrderEntity): Promise<void> {
+  async keepStock(order: OrderEntity): Promise<void> {
     const products = order.products
     for (let i = 0; i < products.length; i++) {
       const item = products[i]
@@ -58,7 +58,7 @@ export class StockRepository implements IStockRepository {
     }
   }
 
-  async shiftToStock(order: OrderEntity): Promise<void> {
+  async restoreStock(order: OrderEntity): Promise<void> {
     const products = order.products
     for (let i = 0; i < products.length; i++) {
       const item = products[i]
@@ -72,7 +72,7 @@ export class StockRepository implements IStockRepository {
     }
   }
 
-  async reduceByPay(orderId: string): Promise<void> {
+  async depleteStock(orderId: string): Promise<void> {
     await this.remainStocks
       .find({
         where: { orderId: orderId },

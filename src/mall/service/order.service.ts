@@ -60,7 +60,7 @@ export class OrderService {
       payment: total,
       createTime: date,
     }
-    await this.stockRepository.shiftToRemainStock(orderForm)
+    await this.stockRepository.keepStock(orderForm)
     await this.orderRepository.createOrder(orderForm)
     return Promise.resolve({ errorcode: Errorcode.Success })
   }
