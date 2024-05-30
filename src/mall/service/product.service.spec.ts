@@ -84,7 +84,7 @@ describe('ProductService', () => {
         price: 1000,
       }
       const product2: Product = {
-        id: 1,
+        id: 2,
         name: 'product2',
         price: 1000,
       }
