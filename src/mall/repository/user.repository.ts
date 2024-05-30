@@ -59,14 +59,15 @@ export class UserRepository implements IUserRepository {
 
   private async save(user: User): Promise<boolean> {
     try {
-      await this.users.manager.transaction(async em => {
-        await em.save<User>(
-          Object.assign(user, {
-            where: { id: user.id },
-            lock: { mode: 'pessimistic_write' },
-          }),
-        )
-      })
+      this.users.save(user)
+      // await this.users.manager.transaction(async em => {
+      //   await em.save<User>(
+      //     Object.assign(user, {
+      //       where: { id: user.id },
+      //       lock: { mode: 'pessimistic_write' },
+      //     }),
+      //   )
+      // })
       return true
     } catch {
       return false
