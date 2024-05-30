@@ -36,7 +36,7 @@ export class PayService {
     const order = await this.orderRepository.getOrder(orderId)
     const result = await this.userRepository.use(userId, order.payment)
     if (result.errorcode !== Errorcode.Success) {
-      await this.stockRepository.shiftToStock(order)
+      await this.stockRepository.restoreStock(order)
       await this.orderRepository.deleteOrder(order)
       return { errorcode: result.errorcode }
     } else {
@@ -47,7 +47,7 @@ export class PayService {
         orderId: orderId,
         createTime: date,
       }
-      this.stockRepository.reduceByPay(orderId)
+      this.stockRepository.depleteStock(orderId)
       this.orderRepository.createPayment(paymentForm)
 
       await this.productRepository.updateSales(

@@ -20,9 +20,12 @@ export const ISTOCK_REPOSITORY = 'Stock Repository'
 export interface IStockRepository {
   getStock(id: number): Promise<StockResult>
   enoughStock(id: number, amount: number): Promise<boolean>
-  shiftToRemainStock(order: OrderEntity): Promise<void>
-  shiftToStock(order: OrderEntity): Promise<void>
-  reduceByPay(orderId: string): Promise<void>
+  // 일부 재고를 결제 전까지 keep함
+  keepStock(order: OrderEntity): Promise<void>
+  // keep한 재고를 복원함
+  restoreStock(order: OrderEntity): Promise<void>
+  // 재고를 결제를 통해 소진함
+  depleteStock(orderId: string): Promise<void>
 }
 
 export const IORDER_REPOSITORY = 'Order Repository'
