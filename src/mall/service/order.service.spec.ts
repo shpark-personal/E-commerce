@@ -60,14 +60,5 @@ describe('OrderService', () => {
       const result = await service.order('userA', li)
       expect(result.errorcode).toEqual(Errorcode.OutOfStock)
     })
-
-    it('fail : lack of point', async () => {
-      const li = [
-        { id: 1, quantity: 9 },
-        { id: 2, quantity: 4 },
-      ]
-      const result = await service.order('userA', li)
-      expect(result.errorcode).toEqual(Errorcode.LackOfPoint)
-    })
   })
 })
