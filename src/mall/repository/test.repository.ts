@@ -16,7 +16,7 @@ import {
   IStockRepository,
   IUserRepository,
 } from './mall.interface'
-import { ValidIdChecker, ValidPointChecker } from '../etc/helper'
+import { ToEntity, ValidIdChecker, ValidPointChecker } from '../etc/helper'
 import { Product, ProductItem } from '../models/Product'
 
 @Injectable()
@@ -267,5 +267,29 @@ export class TestRepository
         this.salesTable.push({ date: d, id: i, quantity: i })
       }
     })
+  }
+
+  public async insertSeedOrders(date: Date): Promise<void> {
+    // seed로 미리 order 저장 ( 호출할 때만 )
+    const li = [
+      { id: 1, quantity: 3 },
+      { id: 2, quantity: 4 },
+    ]
+    let total = 0
+    const productPromises = li.map(async p => {
+      const pro = await this.getProduct(p.id)
+      total += pro.product.price * p.quantity
+      return ToEntity(p)
+    })
+    const productEntity = await Promise.all(productPromises)
+
+    const orderForm: OrderEntity = {
+      id: `${date}`,
+      userId: 'userA',
+      products: productEntity,
+      payment: total,
+      createTime: date,
+    }
+    await this.createOrder(orderForm)
   }
 }
