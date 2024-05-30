@@ -28,7 +28,7 @@ export class OrderService {
 
   async order(userId: string, products: ProductItem[]): Promise<SimpleResult> {
     if (!ValidIdChecker(userId))
-      return Promise.resolve({ errorcode: Errorcode.InvalidRequest })
+      return Promise.resolve({ errorcode: Errorcode.UnknownError })
     let lack = false
     let total = 0
     const productEntity = []

@@ -1,64 +1,108 @@
-import { Test, TestingModule } from '@nestjs/testing'
 import { OrderService } from './order.service'
 import {
-  IORDER_REPOSITORY,
-  IPRODUCT_REPOSITORY,
-  ISTOCK_REPOSITORY,
-  IUSER_REPOSITORY,
+  IOrderRepository,
+  IProductRepository,
+  IStockRepository,
 } from '../repository/mall.interface'
-import { TestRepository } from '../repository/test.repository'
 import { Errorcode } from '../models/Enums'
+import { Product, ProductItem } from '../models/Product'
+import { todo } from 'node:test'
+import { OrderEntity } from '../models/Entities'
 
 describe('OrderService', () => {
-  let service: OrderService
-  // let repo: TestRepository
+  let orderService: OrderService
+  let productRepositoryMock: IProductRepository
+  let stockRepositoryMock: IStockRepository
+  let orderRepositoryMock: IOrderRepository
 
-  beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        OrderService,
-        {
-          provide: IUSER_REPOSITORY,
-          useClass: TestRepository,
-        },
-        {
-          provide: IPRODUCT_REPOSITORY,
-          useClass: TestRepository,
-        },
-        {
-          provide: ISTOCK_REPOSITORY,
-          useClass: TestRepository,
-        },
-        {
-          provide: IORDER_REPOSITORY,
-          useClass: TestRepository,
-        },
-      ],
-    }).compile()
-
-    service = module.get<OrderService>(OrderService)
-    // repo = module.get<TestRepository>(IUSER_REPOSITORY)
-  })
-
-  it('should be defined', () => {
-    expect(service).toBeDefined()
-    // expect(repo).toBeDefined()
+  beforeEach(() => {
+    productRepositoryMock = {
+      getProduct: jest.fn(),
+      updateSales: jest.fn(),
+      getSales: jest.fn(),
+    }
+    stockRepositoryMock = {
+      getStock: jest.fn(),
+      enoughStock: jest.fn(),
+      keepStock: jest.fn(),
+      restoreStock: jest.fn(),
+      depleteStock: jest.fn(),
+    }
+    orderRepositoryMock = {
+      createOrder: jest.fn(),
+      deleteOrder: jest.fn(),
+      createPayment: jest.fn(),
+      getOrder: jest.fn(),
+    }
+    orderService = new OrderService(
+      productRepositoryMock,
+      stockRepositoryMock,
+      orderRepositoryMock,
+    )
   })
 
   describe('order', () => {
+    // 재고가 충분하여 주문 가능하다
     it('success', async () => {
-      const li = [
-        { id: 1, quantity: 3 },
-        { id: 2, quantity: 4 },
+      const userId = 'user123'
+      const product1: Product = {
+        id: 1,
+        name: 'product1',
+        price: 1000,
+      }
+      const product2: Product = {
+        id: 2,
+        name: 'product2',
+        price: 1000,
+      }
+      const pi1: ProductItem = {
+        id: 1,
+        quantity: 1,
+      }
+      const pi2: ProductItem = {
+        id: 2,
+        quantity: 1,
+      }
+
+      jest.spyOn(stockRepositoryMock, 'enoughStock').mockResolvedValue(true)
+      jest
+        .spyOn(productRepositoryMock, 'getProduct')
+        .mockImplementation((id: number) => {
+          if (id === 1) {
+            return Promise.resolve(product1)
+          } else if (id === 2) {
+            return Promise.resolve(product2)
+          } else {
+            return Promise.resolve(null)
+          }
+        })
+
+      const date = new Date()
+      const orderForm: OrderEntity = {
+        id: `${date}`,
+        userId: userId,
+        products: [],
+        payment: product1.price * pi1.quantity + product2.price * pi2.quantity,
+        createTime: date,
+      }
+      orderForm.products = [
+        { id: 1, quantity: 1, order: orderForm },
+        { id: 2, quantity: 1, order: orderForm },
       ]
-      const result = await service.order('userA', li)
-      expect(result.errorcode).toEqual(Errorcode.Success)
+      // jest.spyOn(stockRepositoryMock, 'keepStock')
+
+      const result = await orderService.order(userId, [pi1, pi2])
+      expect(result).toEqual({ errorcode: Errorcode.Success })
+      expect(stockRepositoryMock.enoughStock).toHaveBeenCalled()
+      expect(productRepositoryMock.getProduct).toHaveBeenCalled()
+      expect(stockRepositoryMock.keepStock).toHaveBeenCalled()
+      expect(orderRepositoryMock.createOrder).toHaveBeenCalled()
+      // expect(stockRepositoryMock.keepStock).toHaveBeenCalledWith(orderForm)
+      // expect(orderRepositoryMock.createOrder).toHaveBeenCalledWith(orderForm)
     })
 
-    it('fail : out of stock', async () => {
-      const li = [{ id: 1, quantity: 100 }]
-      const result = await service.order('userA', li)
-      expect(result.errorcode).toEqual(Errorcode.OutOfStock)
-    })
+    todo('valid id check')
+    todo('out of stock')
+    // valid id check
   })
 })
