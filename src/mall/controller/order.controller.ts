@@ -4,7 +4,7 @@ import { OrderListDto } from '../models/DTOs'
 import { SimpleResult } from '../models/Result'
 import { PayService } from '../service/pay.service'
 
-@Controller('order')
+@Controller('mall/order')
 export class OrderController {
   constructor(
     private readonly orderService: OrderService,

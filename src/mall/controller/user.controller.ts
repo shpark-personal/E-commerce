@@ -10,7 +10,7 @@ import { ChargeDto } from '../models/DTOs'
 import { PointResult } from '../models/Result'
 import { UserService } from '../service/user.service'
 
-@Controller('user')
+@Controller('mall/user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
   // 잔액 충전

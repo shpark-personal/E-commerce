@@ -28,7 +28,7 @@ describe('AppController (e2e)', () => {
   it('charge point', async () => {
     const id = 'John'
     const response = await request(app.getHttpServer())
-      .patch(`/user/charge/${id}`)
+      .patch(`/mall//user/charge/${id}`)
       .send({ amount: 10 })
       .expect(HttpStatus.OK)
 
