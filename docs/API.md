@@ -1,7 +1,7 @@
 ### API 미리보기
 - Swagger 사용
-  
-![image](https://github.com/shpark-personal/E-commerce/assets/58277594/22549381-7e02-4e47-a7ef-74c6d779b7de)
+![image](https://github.com/shpark-personal/E-commerce/assets/58277594/5ff8d385-5b60-4c77-849c-d556126b6914)
+
 
 
 
@@ -23,12 +23,12 @@
   
   | 구분 | method | Request Url | param | Body
   | ---- | ---- | ---------------- | ---- | ---- |
-  | 잔액 충전 | PATCH | http://mall/user/{USER_ID}/charge | USER_ID : string | amount : number |
-  | 잔액 조회 | GET | http://mall/user/{USER_ID}/point | USER_ID : string |  |
-  | 상품 조회 | GET | http://mall/product/{PRODUCT_ID} | PRODUCT_ID : number |  |
+  | 잔액 충전 | PATCH | http://mall/user/charge/{USER_ID} | USER_ID : string | amount : number |
+  | 잔액 조회 | GET | http://mall/user/point/{USER_ID} | USER_ID : string |  |
   | 주문 | POST | http://mall/order/{USER_ID} | USER_ID : string | { product_id : number, count : number }[] |
-  | 결제 | POST | http://mall/order/{USER_ID}/pay | USER_ID : string | { product_id : number, count : number }[] |
-  | 상위 상품 조회 | GET | http://mall/product/ranked |  |  |
+  | 결제 | POST | http://mall/order/pay/{USER_ID} | USER_ID : string | { product_id : number, count : number }[] |
+  | 상품 조회 | GET | http://mall/product/{PRODUCT_ID} | PRODUCT_ID : number |  |
+  | 상위 상품 조회 | GET | http://mall/product/ranked |  | period: number or null, top: number or null |
 
 
 
@@ -36,8 +36,8 @@
 
   | 구분 | Body |
   | ---- | ---- |
-  | 잔액 충전 | { errorcode : ErrorCode, amount : number } |
-  | 잔액 조회 | { errorcode : ErrorCode, amount : number } |
+  | 잔액 충전 | { errorcode : ErrorCode, point : number } |
+  | 잔액 조회 | { errorcode : ErrorCode, point : number } |
   | 상품 조회 | { errorcode : ErrorCode, product : Product } |
   | 주문 | errorcode : ErrorCode |
   | 결제 | errorcode : ErrorCode |
