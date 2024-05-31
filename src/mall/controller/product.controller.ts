@@ -16,7 +16,14 @@ export class ProductController {
 
   // 상위 상품 조회
   @Get('ranked')
-  async searchRankedProducts(): Promise<ProductsResult> {
-    return await this.productService.getRankedProducts(new Date(), 3, 5)
+  async searchRankedProducts(
+    @Param('period') period: number | null, // day 기준
+    @Param('top') top: number | null, // 몇 개의 item?
+  ): Promise<ProductsResult> {
+    return await this.productService.getRankedProducts(
+      new Date(),
+      period ?? 3,
+      top ?? 5,
+    )
   }
 }
