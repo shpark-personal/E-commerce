@@ -63,6 +63,10 @@ export class UserRepository implements IUserRepository {
   }
 
   private async findOne(id: string): Promise<User> {
-    return this.users.findOne({ where: { id: id } })
+    try {
+      return this.users.findOne({ where: { id: id } })
+    } catch {
+      return null
+    }
   }
 }
