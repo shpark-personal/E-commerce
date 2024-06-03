@@ -1,10 +1,12 @@
-import { Injectable } from '@nestjs/common'
+import { Inject, Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 import { OrderEntity, RemainStockEntity, StockEntity } from '../models/Entities'
 import { Errorcode } from '../models/Enums'
 import { StockResult } from '../models/Result'
 import { IStockRepository } from './mall.interface'
+import Redis from 'ioredis'
+import { withSpinlock } from 'src/infrastructure/redis/spinlock'
 
 @Injectable()
 export class StockRepository implements IStockRepository {
@@ -13,8 +15,11 @@ export class StockRepository implements IStockRepository {
     private readonly stocks: Repository<StockEntity>,
     @InjectRepository(RemainStockEntity)
     private readonly remainStocks: Repository<RemainStockEntity>,
+    @Inject('REDIS_CLIENT')
+    private readonly redisClient: Redis,
   ) {}
 
+  // 재고 확인
   async getStock(id: number): Promise<StockResult> {
     return await this.stocks
       .findOne({
@@ -29,6 +34,7 @@ export class StockRepository implements IStockRepository {
       })
   }
 
+  // 재고 충분 여부 확인
   async enoughStock(id: number, amount: number): Promise<boolean> {
     return await this.stocks
       .findOne({
@@ -44,34 +50,38 @@ export class StockRepository implements IStockRepository {
       })
   }
 
+  // 재고 -> 미수재고
   async keepStock(order: OrderEntity): Promise<void> {
     const products = order.products
     for (let i = 0; i < products.length; i++) {
       const item = products[i]
-      this.decreaseStock(item.id, item.quantity)
+      await this.decreaseStock(item.id, item.quantity)
       const rs: RemainStockEntity = {
         orderId: order.id,
         productId: item.id,
         quantity: item.quantity,
       }
-      await this.remainStocks.save(rs)
+      await this.increaseRemainStock(rs)
     }
   }
 
+  // 미수재고 -> 재고
   async restoreStock(order: OrderEntity): Promise<void> {
     const products = order.products
     for (let i = 0; i < products.length; i++) {
       const item = products[i]
-      this.increaseStock(item.id, item.quantity)
+      await this.increaseStock(item.id, item.quantity)
+      // fixme : find with orderid
       const rs: RemainStockEntity = {
         orderId: order.id,
         productId: item.id,
         quantity: item.quantity,
       }
-      await this.remainStocks.remove(rs)
+      await this.decreaseRemainStock(rs)
     }
   }
 
+  // 미수재고 -> 출하!
   async depleteStock(orderId: string): Promise<void> {
     await this.remainStocks
       .find({
@@ -79,33 +89,61 @@ export class StockRepository implements IStockRepository {
       })
       .then(remainStocks => {
         if (remainStocks.length > 0) {
-          const deletePromises = remainStocks.map(remainStock => {
-            return this.remainStocks.remove(remainStock)
+          const deletePromises = remainStocks.map(async remainStock => {
+            return await this.decreaseRemainStock(remainStock)
           })
           return Promise.all(deletePromises)
         }
       })
   }
 
-  private decreaseStock(id: number, amount: number) {
-    this.stocks
-      .findOne({
-        where: { id: id },
-      })
-      .then(o => {
-        o.quantity = o.quantity - amount
-      })
-    // fixme : error
+  //#region  privates
+  private async decreaseStock(id: number, amount: number) {
+    await withSpinlock(
+      this.redisClient,
+      `lock:stock:d:${id}`,
+      3000,
+      async () => {
+        const stock = await this.stocks.findOne({ where: { id } })
+        if (stock) {
+          stock.quantity -= amount
+          await this.stocks.save(stock)
+        }
+      },
+    )
   }
 
-  private increaseStock(id: number, amount: number) {
-    this.stocks
-      .findOne({
-        where: { id: id },
-      })
-      .then(o => {
-        o.quantity = o.quantity + amount
-      })
-    // fixme : error
+  private async increaseStock(id: number, amount: number) {
+    await withSpinlock(
+      this.redisClient,
+      `lock:stock:i:${id}`,
+      3000,
+      async () => {
+        const stock = await this.stocks.findOne({ where: { id } })
+        if (stock) {
+          stock.quantity += amount
+          await this.stocks.save(stock)
+        }
+      },
+    )
   }
+
+  private async increaseRemainStock(remainStock: RemainStockEntity) {
+    await withSpinlock(
+      this.redisClient,
+      `lock:remain:i:${remainStock.orderId}:${remainStock.productId}`,
+      3000,
+      async () => await this.remainStocks.save(remainStock),
+    )
+  }
+
+  private async decreaseRemainStock(remainStock: RemainStockEntity) {
+    await withSpinlock(
+      this.redisClient,
+      `lock:remain:d:${remainStock.orderId}:${remainStock.productId}`,
+      3000,
+      async () => await this.remainStocks.remove(remainStock),
+    )
+  }
+  //#endregion  privates
 }
