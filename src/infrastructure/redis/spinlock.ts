@@ -1,10 +1,12 @@
 import { Redis } from 'ioredis'
+import { QueryRunner } from 'typeorm'
 
 export async function withSpinlock<T>(
   redisClient: Redis,
   lockKey: string,
   ttl: number,
-  task: () => Promise<T>,
+  task: (queryRunner: QueryRunner) => Promise<T>,
+  queryRunner: QueryRunner,
 ): Promise<T> {
   const lockValue = Date.now().toString()
   // ttl : timeout
@@ -18,7 +20,7 @@ export async function withSpinlock<T>(
   }
 
   try {
-    return await task()
+    return await task(queryRunner)
   } finally {
     const lockCheck = await redisClient.get(lockKey)
     if (lockCheck === lockValue) {
