@@ -8,6 +8,9 @@
 - [API](https://github.com/shpark-personal/E-commerce/blob/main/docs/API.md)
 - [ERD 설계](https://github.com/shpark-personal/E-commerce/blob/main/docs/ERD.md)
 
+### Trouble Shootings
+- [동시성 문제](https://github.com/shpark-personal/E-commerce/blob/main/docs/trouble-shootings.md#%EB%8F%99%EC%8B%9C%EC%84%B1-%EB%AC%B8%EC%A0%9C)
+
 ### CI/CD
 - [서버 관리](https://github.com/shpark-personal/E-commerce/blob/main/docs/workflow.md)
 - [Tagging rules](https://github.com/shpark-personal/E-commerce/blob/main/docs/tagging%20rules.md)
