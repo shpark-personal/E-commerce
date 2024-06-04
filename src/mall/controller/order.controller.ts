@@ -1,6 +1,6 @@
 import { Body, Controller, Param, Post, ValidationPipe } from '@nestjs/common'
 import { OrderService } from '../service/order.service'
-import { OrderListDto } from '../models/DTOs'
+import { OrderIdDto, OrderListDto } from '../models/DTOs'
 import { SimpleResult } from '../models/Result'
 import { PayService } from '../service/pay.service'
 
@@ -24,8 +24,8 @@ export class OrderController {
   @Post('pay/:id')
   async pay(
     @Param('id') userId: string,
-    @Body(ValidationPipe) orderId: string,
+    @Body(ValidationPipe) dto: OrderIdDto,
   ): Promise<SimpleResult> {
-    return await this.payService.pay(userId, orderId)
+    return await this.payService.pay(userId, dto.orderId)
   }
 }
