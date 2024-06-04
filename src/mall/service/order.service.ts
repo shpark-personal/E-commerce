@@ -33,28 +33,29 @@ export class OrderService {
     let total = 0
     const productEntity = []
     // fixme : transacion 추가
-    await products.map(async item => {
+    for (const item of products) {
       const result = await this.stockRepository.enoughStock(
         item.id,
         item.quantity,
       )
       if (!result) {
         lack = true
-        return
       }
-      return this.productRepository.getProduct(item.id).then(o => {
-        total += o.product.price * item.quantity
-        console.log(
-          `p : ${o.product.price}, amt : ${item.quantity}, t : ${total}`,
-        )
-        productEntity.push(ToEntity(item))
-      })
-    })
+
+      const product = await this.productRepository.getProduct(item.id)
+      total = total + product.product.price * item.quantity
+      productEntity.push(ToEntity(item))
+      console.log(
+        `amt : ${item.quantity}, t : ${total}, p : ${productEntity.length}`,
+      )
+    }
+    console.log(`tt : ${total}, p : ${productEntity.length}`)
     if (lack) return Promise.resolve({ errorcode: Errorcode.OutOfStock })
 
     const date = new Date()
     const orderForm: OrderEntity = {
-      id: `${date}`,
+      // id: `${date}`,
+      id: 'xx',
       userId: userId,
       products: productEntity,
       payment: total,

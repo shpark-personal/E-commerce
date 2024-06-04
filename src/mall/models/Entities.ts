@@ -1,7 +1,7 @@
 import {
   Column,
   Entity,
-  JoinColumn,
+  // JoinColumn,
   ManyToOne,
   OneToMany,
   PrimaryColumn,
@@ -57,7 +57,9 @@ export class OrderEntity {
   @Column()
   userId: string
 
-  @OneToMany(() => ProductItemEntity, productItem => productItem.order)
+  @OneToMany(() => ProductItemEntity, productItem => productItem.order, {
+    cascade: true,
+  })
   products: ProductItemEntity[]
 
   @Column()
@@ -103,6 +105,6 @@ export class ProductItemEntity {
   quantity: number
 
   @ManyToOne(() => OrderEntity, order => order.products)
-  @JoinColumn({ name: 'orderId' })
+  // @JoinColumn({ name: 'orderId' })
   order: OrderEntity
 }
