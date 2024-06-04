@@ -28,6 +28,7 @@ export class OrderRepository implements IOrderRepository {
   async getOrder(orderId: string): Promise<OrderEntity> {
     return await this.orders.findOne({
       where: { id: orderId },
+      relations: ['products'],
     })
   }
 }
