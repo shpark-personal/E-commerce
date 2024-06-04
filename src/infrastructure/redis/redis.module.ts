@@ -8,7 +8,7 @@ import { Redis } from 'ioredis'
       provide: 'REDIS_CLIENT',
       useFactory: () => {
         const client = new Redis({
-          host: 'localhost', // Redis 서버 주소
+          host: '127.0.0.1', // Redis 서버 주소
           port: 6379, // Redis 서버 포트
         })
         return client
