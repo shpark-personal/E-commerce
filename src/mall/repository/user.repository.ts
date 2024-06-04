@@ -68,6 +68,7 @@ export class UserRepository implements IUserRepository {
 
       user.point = remainPoint
       await this.update(user, queryRunner)
+      await queryRunner.commitTransaction()
       return { errorcode: Errorcode.Success, point: remainPoint }
     } catch {
       await queryRunner.rollbackTransaction()

@@ -35,6 +35,7 @@ export class PayService {
     // 결제 시도
     const order = await this.orderRepository.getOrder(orderId)
     const result = await this.userRepository.use(userId, order.payment)
+    console.log(result.point)
     if (result.errorcode !== Errorcode.Success) {
       await this.stockRepository.restoreStock(order)
       await this.orderRepository.deleteOrder(order)
@@ -47,13 +48,11 @@ export class PayService {
         orderId: orderId,
         createTime: date,
       }
-      this.stockRepository.depleteStock(orderId)
-      this.orderRepository.createPayment(paymentForm)
+      await this.stockRepository.depleteStock(orderId)
+      await this.orderRepository.createPayment(paymentForm)
 
-      await this.productRepository.updateSales(
-        new Date(),
-        order.products.map(p => ToDto(p)),
-      )
+      const productsDto = (order.products ?? []).map(p => ToDto(p))
+      await this.productRepository.updateSales(new Date(), productsDto)
       return { errorcode: Errorcode.Success }
     }
   }
