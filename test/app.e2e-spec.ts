@@ -5,6 +5,7 @@ import { todo } from 'node:test'
 import { HttpStatus } from '@nestjs/common'
 import { User } from '../src/mall/models/Entities'
 import { Repository } from 'typeorm'
+import { getRepositoryToken } from '@nestjs/typeorm'
 
 describe('AppController (e2e)', () => {
   let app
@@ -18,7 +19,9 @@ describe('AppController (e2e)', () => {
     app = moduleFixture.createNestApplication()
     await app.init()
 
-    userRepository = moduleFixture.get('UserRepository')
+    userRepository = moduleFixture.get<Repository<User>>(
+      getRepositoryToken(User),
+    )
   })
 
   beforeEach(async () => {
@@ -28,7 +31,7 @@ describe('AppController (e2e)', () => {
   it('charge point', async () => {
     const id = 'John'
     const response = await request(app.getHttpServer())
-      .patch(`/mall//user/charge/${id}`)
+      .patch(`/mall/user/charge/${id}`)
       .send({ amount: 10 })
       .expect(HttpStatus.OK)
 
