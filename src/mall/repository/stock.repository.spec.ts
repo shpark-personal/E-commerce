@@ -1,7 +1,8 @@
-import { Repository } from 'typeorm'
+import { DataSource, Repository } from 'typeorm'
 import { StockEntity, RemainStockEntity } from '../models/Entities'
 import { Errorcode } from '../models/Enums'
 import { StockRepository } from './stock.repository'
+import Redis from 'ioredis'
 
 describe('stockRepositoryTest', () => {
   const mockStockRepository = {
@@ -14,9 +15,14 @@ describe('stockRepositoryTest', () => {
     save: jest.fn(),
   }
 
+  const redis = {}
+  const datasource = {}
+
   const repository = new StockRepository(
     mockStockRepository as unknown as Repository<StockEntity>,
     mockRemainStockRepository as unknown as Repository<RemainStockEntity>,
+    redis as Redis,
+    datasource as DataSource,
   )
 
   describe('getStock', () => {
