@@ -6,7 +6,7 @@ import { Errorcode } from '../models/Enums'
 import { StockResult } from '../models/Result'
 import { IStockRepository } from './mall.interface'
 import Redis from 'ioredis'
-import { withSpinlock } from 'src/infrastructure/redis/spinlock'
+import { withSpinlock } from '../../infrastructure/redis/spinlock'
 
 @Injectable()
 export class StockRepository implements IStockRepository {

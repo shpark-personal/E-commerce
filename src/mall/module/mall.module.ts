@@ -26,7 +26,7 @@ import { PayService } from '../service/pay.service'
 import { ProductService } from '../service/product.service'
 import { UserController } from '../controller/user.controller'
 import { ProductController } from '../controller/product.controller'
-import { RedisModule } from 'src/infrastructure/redis/redis.module'
+import { RedisModule } from '../../infrastructure/redis/redis.module'
 
 @Module({
   imports: [
